@@ -117,7 +117,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 	//Line ray(Vert2f(surface.width / 2, surface.height / 2), Vec2f(), 200);
 
 #if SCREEN_MODE == SMALL_SCREEN
-	std::vector<std::vector<Line>> lighters(4, std::vector<Line>());
+	std::vector<std::vector<Line>> lighters(5, std::vector<Line>());
 	for (std::vector<Line> rays : lighters)
 		rays.reserve(50);
 #else
@@ -189,8 +189,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 		{
 			for (Line& ray : lighters[i])
 			{
-				ray.pos.x = mouse.x + cosf(i * PI / 5) * 12;
-				ray.pos.y = mouse.y + sinf(i * PI / 5) * 12;
+				ray.pos.x = mouse.x + cosf(i * 2*PI / 5) * 12;
+				ray.pos.y = mouse.y + sinf(i * 2*PI / 5) * 12;
 			}
 		}
 
@@ -369,6 +369,10 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 
 			}
 		}
+
+		// draw origin of lighter
+		for (auto lighter : lighters)
+			draw_filled_circle(lighter[0].pos.x, lighter[0].pos.y, 2, Color(255, 0, 0));
 #endif
 #elif SCREEN_MODE == BIG_SCREEN
 #if DRAW_MODE == LINES
