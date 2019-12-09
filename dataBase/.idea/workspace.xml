@@ -2,9 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6675eee0-1d03-430d-b04d-be8c26de3ce2" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../tiny_renderer/tiny_renderer/Log/log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../tiny_renderer/tiny_renderer/Log/log.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../tiny_renderer/tiny_renderer/simulate.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../tiny_renderer/tiny_renderer/simulate.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/teset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/data_base.db" beforeDir="false" afterPath="$PROJECT_DIR$/data/data_base.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Новый текстовый документ.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/dbController.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/dbController.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -176,5 +179,21 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/lib/dbController.py</url>
+          <line>130</line>
+          <option name="timeStamp" value="66" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/lib/dbController.py</url>
+          <line>70</line>
+          <option name="timeStamp" value="68" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

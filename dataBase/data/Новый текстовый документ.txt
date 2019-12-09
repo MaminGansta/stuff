@@ -1,9 +1,0 @@
-INSERT INTO books(name, compos_id, genre_id, author_id, year, town, illustr, collection, cost,  here) VALUES("book1", 1, 1, 2, 1902, city1, 0, 0, 1200, 1);
-INSERT INTO books(name, compos_id, genre_id, author_id, year, town, illustr, collection, cost,  here) VALUES("book2", 2, 2, 1, 1912, city1, 1, 0, 500, 1);
-INSERT INTO books(name, compos_id, genre_id, author_id, year, town, illustr, collection, cost,  here) VALUES("book3", 3, 4, 1, 1902, city1, 0, 0, 300, 1);
-INSERT INTO books(name, compos_id, genre_id, author_id, year, town, illustr, collection, cost,  here) VALUES("book4", 4, 5, 4, 1991, city1, 1, 0, 2500, 1);
-INSERT INTO books(name, compos_id, genre_id, author_id, year, town, illustr, collection, cost,  here) VALUES("book5", 5, 3, 4, 1982, city1, 1, 0, 1000, 1);
-INSERT INTO books(name, compos_id, genre_id, author_id, year, town, illustr, collection, cost,  here) VALUES("book6", 1, 3, 3, 1966, city1, 0, 0, 800, 1);
-INSERT INTO books(name, compos_id, genre_id, author_id, year, town, illustr, collection, cost,  here) VALUES("book7", 2, 2, 5, 2001, city1, 1, 0, 600, 1);
-INSERT INTO books(name, compos_id, genre_id, author_id, year, town, illustr, collection, cost,  here) VALUES("book8", 3, 1, 1, 1914, city1, 0, 0, 3000, 1);
-INSERT INTO books(name, compos_id, genre_id, author_id, year, town, illustr, collection, cost,  here) VALUES("book8", 4, 1, 4, 1914, city1, 0, 0, 3000, 1);
