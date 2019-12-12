@@ -190,6 +190,21 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 		// ship movemnt
 		ship.move(ship.speed_x, ship.speed_y);
 
+		// collision detection
+		if (ship.center.x < -0.5)
+			ship.center.x = -0.5, ship.speed_x *= -0.3;
+
+		if (ship.center.x > 0.5)
+			ship.center.x = 0.5, ship.speed_x *= -0.3;
+
+		if (ship.center.y < -0.5)
+			ship.center.y = -0.5, ship.speed_y *= -0.3;
+
+		if (ship.center.y > 0.5)
+			ship.center.y = 0.5, ship.speed_y *= -0.3;
+
+
+
 		// Draw --------------------------------------------------------------
 
 		// Clear sreen
@@ -197,6 +212,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 
 
 		draw_shape(ship.pts);
+
+
 
 		
 		// Render

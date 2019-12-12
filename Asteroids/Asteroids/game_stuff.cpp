@@ -52,6 +52,13 @@ inline Matrix22f rotationMatrix(float angle)
 	return Matrix22f(cosf(angle), -sinf(angle), sinf(angle), cosf(angle));
 }
 
+// rotate shape
+inline void rotate_shape(std::vector<Vec2f>& shape, Vec2f center, Matrix22f r)
+{
+	for (Vec2f& v : shape)
+		v = (r * (v - center)) + center;
+}
+
 // game structs----------------------------------------------------------------------
 
 struct Ship
@@ -81,9 +88,17 @@ struct Asteroid
 	float speed_y{0};
 };
 
-// rotate shap
-inline void rotate_shape(std::vector<Vec2f>& shape, Vec2f center, Matrix22f r)
+
+std::vector<Vec2f> get_asteroid(int i)
 {
-	for (Vec2f& v : shape)
-		v = (r * (v - center)) + center;
+	std::vector<Vec2f> a[] = {
+	std::vector<Vec2f> { Vec2f(0.03, 0.04), Vec2f(0, 0.02), Vec2f(-0.01, 0.04), Vec2f(-0.03, -0.01), Vec2f(-0.005, -0.03), Vec2f(0.04, -0.02), Vec2f(0.05, 0) },
+	std::vector<Vec2f> { Vec2f(0.02, 0.04), Vec2f(0, 0.02), Vec2f(-0.05, 0.04), Vec2f(-0.03, -0.01), Vec2f(-0.005, -0.01), Vec2f(0.05, -0.02), Vec2f(0.05, 0) },
+	std::vector<Vec2f> { Vec2f(0.03, 0.04), Vec2f(0, 0.05), Vec2f(-0.01, 0.04), Vec2f(-0.03, -0.01), Vec2f(-0.005, -0.03), Vec2f(0.04, -0.02), Vec2f(0.05, 0) },
+	std::vector<Vec2f> { Vec2f(0.03, 0.04), Vec2f(0, 0.05), Vec2f(-0.02, 0.05), Vec2f(0, 0.01), Vec2f(-0.03, -0.01), Vec2f(-0.005, -0.03), Vec2f(0.04, -0.02), Vec2f(0.05, 0) },
+	std::vector<Vec2f> { Vec2f(0.01, 0.04), Vec2f(0, 0.02), Vec2f(-0.01, 0.04),Vec2f(-0.04, 0.05), Vec2f(-0.03, -0.01), Vec2f(-0.1, 0.02) , Vec2f(-0.05, -0.02), Vec2f(0.01, -0.07), Vec2f(0.05, -0.02) , Vec2f(0.1, 0), Vec2f(0.02, 0.01) }
+	};
+
+	return a[i];
 }
+
