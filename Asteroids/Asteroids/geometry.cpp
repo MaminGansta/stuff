@@ -17,8 +17,16 @@ struct Vec2
 	inline Vec2<T> operator + (Vec2<T> other)
 	{
 		Vec2<T>	temp;
-		temp.x =  + other.x;
+		temp.x = x + other.x;
 		temp.y = y + other.y;
+		return temp;
+	}
+
+	inline Vec2<T> operator - (Vec2<T> other)
+	{
+		Vec2<T>	temp;
+		temp.x = x - other.x;
+		temp.y = y - other.y;
 		return temp;
 	}
 

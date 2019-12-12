@@ -154,18 +154,46 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 			}
 		}
 
+
+
+		// Simulate ----------------------------------------------------------
+
 		// input handler
-		if ()
+		if (Kinput.buttons[BUTTON_UP].is_down)
+		{
+			ship.speed_x += cosf(ship.dir) * ship.speed_dif * timer.elapsed;
+			ship.speed_y += sinf(ship.dir) * ship.speed_dif * timer.elapsed;
+		}
+		else
+		{
+			ship.speed_x = fabs(ship.speed_x) < 0.00001 ? 0 : ship.speed_x > 0 ? ship.speed_x - ship.speed_dif * timer.elapsed : ship.speed_x + ship.speed_dif * timer.elapsed;
+			ship.speed_y = fabs(ship.speed_y) < 0.00001 ? 0 : ship.speed_y > 0 ? ship.speed_y - ship.speed_dif * timer.elapsed : ship.speed_y + ship.speed_dif * timer.elapsed;
+		}
+
+		if (Kinput.buttons[BUTTON_LEFT].is_down)
+		{
+			float a = PI * timer.elapsed;
+			Matrix22f r = rotationMatrix(a);
+			rotate_shape(ship.pts, ship.center, r);
+			ship.dir += a;
+		}
+
+		if (Kinput.buttons[BUTTON_RIGHT].is_down)
+		{
+			float a = -PI * timer.elapsed;
+			Matrix22f r = rotationMatrix(a);
+			rotate_shape(ship.pts, ship.center, r);
+			ship.dir += a;
+		}
 
 
-		// Simulate
+		// ship movemnt
+		ship.move(ship.speed_x, ship.speed_y);
 
-
-
-		// Draw
+		// Draw --------------------------------------------------------------
 
 		// Clear sreen
-		drawRect(0, 0, surface.width, surface.height, Color(0, 0, 0));
+		draw_filled_rect(0, 0, surface.width, surface.height, Color(0, 0, 0));
 
 
 		draw_shape(ship.pts);
