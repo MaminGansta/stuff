@@ -47,16 +47,19 @@ struct Matrix22
 typedef Matrix22<float> Matrix22f;
 
 
-inline Matrix22f rotationMatrix(float angle)
-{
-	return Matrix22f(cosf(angle), -sinf(angle), sinf(angle), cosf(angle));
-}
 
 // rotate shape
-inline void rotate_shape(std::vector<Vec2f>& shape, Vec2f center, Matrix22f r)
+inline void rotate_shape(std::vector<Vec2f>& shape, Vec2f center, float angle)
 {
+	Matrix22f r(cosf(angle), -sinf(angle), sinf(angle), cosf(angle));
 	for (Vec2f& v : shape)
 		v = (r * (v - center)) + center;
+}
+
+// scale shape
+inline void scale_shape(std::vector<Vec2f>& shape, float scale)
+{
+
 }
 
 // game structs----------------------------------------------------------------------

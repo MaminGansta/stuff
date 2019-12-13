@@ -173,16 +173,14 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 		if (Kinput.buttons[BUTTON_LEFT].is_down)
 		{
 			float a = PI * timer.elapsed;
-			Matrix22f r = rotationMatrix(a);
-			rotate_shape(ship.pts, ship.center, r);
+			rotate_shape(ship.pts, ship.center, a);
 			ship.dir += a;
 		}
 
 		if (Kinput.buttons[BUTTON_RIGHT].is_down)
 		{
 			float a = -PI * timer.elapsed;
-			Matrix22f r = rotationMatrix(a);
-			rotate_shape(ship.pts, ship.center, r);
+			rotate_shape(ship.pts, ship.center, a);
 			ship.dir += a;
 		}
 
@@ -212,7 +210,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 
 
 		draw_shape(ship.pts);
-
 
 
 		
