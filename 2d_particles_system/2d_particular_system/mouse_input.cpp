@@ -17,6 +17,6 @@ struct Buttons
 
 struct Mouse_Input
 {
-	int x{0}, y{0};
+	vec2f pos;
 	Buttons buttons[MOUSE_BUTTONS_COUNT];
 };

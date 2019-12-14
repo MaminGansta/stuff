@@ -3,21 +3,24 @@
 #include <limits>
 #include <cmath>
 #include <vector>
+#include <algorithm>
+#include <utility>
 
 #undef min
 #undef max
 
 #define MAX(a, b) (a > b? a: b)
 #define MIN(a, b) (a < b? a: b)
+#define PI 3.14159265359
 
 // global variables
 bool running = true;
 
 #include "render_stuff.cpp"
 #include "geometry.cpp"
+#include "particles.cpp"
 #include "shader.cpp"
 #include "draw.cpp"
-#include "particals.cpp"
 #include "mouse_input.cpp"
 #include "timer.cpp"
 
@@ -76,6 +79,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	goOutShader shader;
 	Mouse_Input mouse;
 	Timer timer;
+	particles_buffer particles(200);
+
+	float interval = 0.1;
 
 	while (running)
 	{
@@ -86,8 +92,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{
 			case WM_MOUSEMOVE:
 			{
-				mouse.x = int(LOWORD(msg.lParam));
-				mouse.y = surface.height - int(HIWORD(msg.lParam));
+				int x = LOWORD(msg.lParam);
+				int y = HIWORD(msg.lParam);
+				mouse.pos.x = float(x - surface.width / 2) / surface.height;
+				mouse.pos.y = float(surface.height - y - surface.height / 2) / surface.height;
 			}break;
 			case WM_LBUTTONDOWN:
 			{
@@ -108,24 +116,40 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 		// Simulate
+		interval -= timer.elapsed;
+
+		if (interval < 0)
+		{
+			add_particles(particles, rand() % 10, mouse.pos, 0.1, vec2f(0, 1), PI, float(rand() % 500 + 300) / 100, float(rand() % 100) / 100);
+			interval = 0.02;
+		}
+
+		particles.calculate();
 
 
 
 
 		// Draw
-		Vec2f center;
-		std::vector<Vec2f> pts{Vec2f(0, 0.4), Vec2f(-0.4, -0.4), Vec2f(0.4, -0.4)};
-		draw_filled_shape(pts, center, &shader);
+		// clear screen
+		draw_filled_rect(0, 0, surface.width, surface.height, Color(0, 0, 0));
+
+		// draw particles
+		for (int i = 0; i < particles.actives; i++)
+		{
+			uni_life_time = particles[i].life_time;
+			draw_filled_shape(shapes[particles[i].shape], &particles[i], &shader);
+		}
 		
 		// Render
 		StretchDIBits(hdc, 0, 0, surface.width, surface.height, 0, 0, surface.width, surface.height, surface.memory, &surface.bitmap_info, DIB_RGB_COLORS, SRCCOPY);
 
 		// Timer
 		timer.update();
+		elapsed = timer.elapsed;
 
 		// Log
-		char log[32];
-		sprintf_s(log, "fps: %d ftime: %.3f sec \n", timer.FPS, timer.elapsed);
+		char log[128];
+		sprintf_s(log, "fps: %d ftime: %.3f sec  particles: %d \n", timer.FPS, timer.elapsed, particles.actives);
 		OutputDebugStringA(log);
 
 	}

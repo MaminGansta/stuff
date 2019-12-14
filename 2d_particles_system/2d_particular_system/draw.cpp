@@ -1,5 +1,5 @@
 
-void triangle(Vec3f* pts, IShader* shader);
+void triangle(vec3f* pts, IShader* shader);
 
 inline void drawPixel(int x, int y, Color color) {
 	x = MIN(x, surface.width - 1);
@@ -79,49 +79,75 @@ inline void draw_filled_rect(int x0, int y0, int x1, int y1, Color color)
 
 }
 
-inline Vec2i to_screen(Vec2f in)
+inline vec2i to_screen(vec2f in)
 {
-	Vec2i out;
+	vec2i out;
 	out.x = in.x * surface.height + surface.width / 2;
 	out.y = in.y * surface.height + surface.height / 2;
 	return out;
 }
 
-inline void draw_shape(std::vector<Vec2f>& pts)
+inline void draw_shape(std::vector<vec2f>& pts, Color color)
 {
 	for (int i = 0; i < pts.size() - 1; i++)
 	{
-		Vec2i scr_pt1 = to_screen(pts[i]);
-		Vec2i scr_pt2 = to_screen(pts[i+1]);
-		drawLine(scr_pt1.x, scr_pt1.y, scr_pt2.x, scr_pt2.y, Color(255, 255, 255));
+		vec2i scr_pt1 = to_screen(pts[i]);
+		vec2i scr_pt2 = to_screen(pts[i+1]);
+		drawLine(scr_pt1.x, scr_pt1.y, scr_pt2.x, scr_pt2.y, color);
 	}
 
-	Vec2i scr_pt1 = to_screen(pts.back());
-	Vec2i scr_pt2 = to_screen(pts.front());
-	drawLine(scr_pt1.x, scr_pt1.y, scr_pt2.x, scr_pt2.y, Color(255, 255, 255));
+	vec2i scr_pt1 = to_screen(pts.back());
+	vec2i scr_pt2 = to_screen(pts.front());
+	drawLine(scr_pt1.x, scr_pt1.y, scr_pt2.x, scr_pt2.y, color);
 }
 
-inline void draw_filled_shape(std::vector<Vec2f>& pts, Vec2f center, IShader* shader)
+inline void draw_filled_shape(std::vector<vec2f>& pts, object* obj, IShader* shader)
 {
-	for (int i = 0; i < pts.size() - 1; i++)
+	// triangle 
+	if (pts.size() == 3)
 	{
-		Vec3f screen_pts[3] = { Vec3f(center), Vec3f(pts[i]), Vec3f(pts[i+1]) };
-		shader->vertex(screen_pts);
+		vec2f local_pts[3] = { pts[0], pts[1], pts[2] };
+		vec3f screen_pts[3];
+		shader->vertex(local_pts, screen_pts, *obj);
 		triangle(screen_pts, shader);
 	}
+	// quad shape (2 triangles)
+	else if (pts.size() == 4)
+	{
+		vec2f local_pts[3] = { pts[0], pts[1], pts[2] };
+		vec3f screen_pts[3];
+		shader->vertex(local_pts, screen_pts, *obj);
+		triangle(screen_pts, shader);
 
-	Vec3f screen_pts[3] = { Vec3f(center), Vec3f(pts.back()), Vec3f(pts.front()) };
-	shader->vertex(screen_pts);
-	triangle(screen_pts, shader);
+		local_pts[0] = pts[0];
+		local_pts[1] = pts[2];
+		local_pts[2] = pts[3];
+		shader->vertex(local_pts, screen_pts, *obj);
+		triangle(screen_pts, shader);
+	}
+	else
+	{
+		for (int i = 0; i < pts.size() - 1; i++)
+		{
+			vec3f screen_pts[3];
+			vec2f local_pts[3] = { obj->pos, pts[i], pts[i + 1] };
+			shader->vertex(local_pts, screen_pts, *obj);
+			triangle(screen_pts, shader);
+		}
+		vec3f screen_pts[3];
+		vec2f local_pts[3] = { obj->pos, pts.back(), pts.front() };
+		shader->vertex(local_pts, screen_pts, *obj);
+		triangle(screen_pts, shader);
+	}
 }
 
 
-void triangle(Vec3f* pts, IShader* shader)
+void triangle(vec3f* pts, IShader* shader)
 {
 	if (pts[0].y == pts[1].y && pts[0].y == pts[2].y) return; // i don't care about degenerate triangles
 	
-	Vert2f bot_left(std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
-	Vert2f top_right(std::numeric_limits<float>::min(), std::numeric_limits<float>::min());
+	vec2f bot_left(std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
+	vec2f top_right(std::numeric_limits<float>::min(), std::numeric_limits<float>::min());
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 2; j++)
@@ -135,12 +161,12 @@ void triangle(Vec3f* pts, IShader* shader)
 		}
 	}
 
-	Vert3i P;
+	vec3i P;
 	for (P.x = bot_left.x; P.x < top_right.x; P.x += 1.0f)
 	{
 		for (P.y = bot_left.y; P.y < top_right.y; P.y += 1.0f)
 		{
-			Vert3f bar;
+			vec3f bar;
 			if (barycentric(pts[0], pts[1], pts[2], P, &bar))
 				surface.memory[P.y * surface.width + P.x] = shader->fragment().whole;	
 		}
