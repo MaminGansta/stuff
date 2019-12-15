@@ -83,7 +83,7 @@ struct particles_buffer
 	particle& operator [] (int i) { return buffer[i]; }
 };
 
-void add_particles(particles_buffer& buffer, int amount, vec2f pos, float scale, vec2f dir = vec2f(1, 0), float range = PI / 6, float speed = 0, float life_time = 999)
+void add_particles(particles_buffer& buffer, int amount, vec2f pos, float scale, vec2f dir = vec2f(1, 0), float range = PI / 6, float speed = 1, float life_time = 999)
 {
 	int max = MIN(buffer.size - 1, buffer.actives + amount);
 

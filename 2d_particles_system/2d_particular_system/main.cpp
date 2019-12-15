@@ -80,9 +80,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	goOutShader shader;
 	Mouse_Input mouse;
 	Timer timer;
-	particles_buffer particles(2000);
-
-	float interval = 0.1;
+	particles_buffer particles(1000);
 
 	while (running)
 	{
@@ -117,17 +115,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 		// Simulate
-		interval -= timer.elapsed;
 
-		//if (interval < 0)
-		{
-			add_particles(particles, rand() % 10, mouse.pos, 0.1, vec2f(0, 1), PI*2, float(rand() % 20 + 30) / 100, float(rand() % 1000) / 1000);
-			interval = 0.02;
-		}
+
+		add_particles(particles, rand() % 10, mouse.pos, 0.1, vec2f(0, 1), PI*2, float(rand() % 20 + 30) / 100, float(rand() % 200) / 100);
 
 		particles.calculate();
-
-
 
 
 		// Draw
