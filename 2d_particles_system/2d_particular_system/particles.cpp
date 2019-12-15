@@ -25,8 +25,8 @@ struct particle : public object
 	int shape;
 
 	vec2f speed_dir;
-	float whole_speed;
-	float speed;
+	float whole_speed; // start speed
+	float speed;      // current speed
 
 	float whole_life;
 	float life_time; // in secconds
@@ -42,6 +42,9 @@ struct particle : public object
 // global
 float elapsed = 0;
 
+// for second mod
+vec2f mouse_pos;
+
 
 void stnd_behavior(std::vector<particle>& buffer, size_t& actives)
 {
@@ -56,7 +59,7 @@ void stnd_behavior(std::vector<particle>& buffer, size_t& actives)
 		}
 
 		buffer[i].life_time -= elapsed;
-		buffer[i].speed -= buffer[i].whole_speed * (buffer[i].life_time / buffer[i].whole_life) * elapsed;
+		buffer[i].speed = buffer[i].whole_speed * (buffer[i].life_time / buffer[i].whole_life);
 		buffer[i].pos +=  buffer[i].speed_dir * buffer[i].speed * elapsed;
 		buffer[i].rotate = Matrix22f(cosf(buffer[i].rotation_angle), -sinf(buffer[i].rotation_angle),
 									 sinf(buffer[i].rotation_angle),  cosf(buffer[i].rotation_angle));
@@ -83,7 +86,7 @@ struct particles_buffer
 	particle& operator [] (int i) { return buffer[i]; }
 };
 
-void add_particles(particles_buffer& buffer, int amount, vec2f pos, float scale, vec2f dir = vec2f(1, 0), float range = PI / 6, float speed = 1, float life_time = 999)
+void add_particles(particles_buffer& buffer, int amount, vec2f pos, float scale, vec2f dir = vec2f(1, 0), float range = PI / 6, float speed = 0, float life_time = 999)
 {
 	int max = MIN(buffer.size - 1, buffer.actives + amount);
 

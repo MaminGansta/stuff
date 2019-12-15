@@ -15,6 +15,11 @@ struct vec2
 		return 	vec2<T> (x + other.x, y + other.y);
 	}
 
+	inline vec2<T> operator - (vec2<T> other)
+	{
+		return 	vec2<T>(x - other.x, y - other.y);
+	}
+
 	inline vec2<T> operator * (float scalar)
 	{
 		return	vec2<T>(x * scalar, y * scalar);

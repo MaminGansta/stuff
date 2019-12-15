@@ -10,6 +10,8 @@
 #undef min
 #undef max
 
+#define mod 1 // 0 1 2 : flame , black hole, 
+
 #define MAX(a, b) (a > b? a: b)
 #define MIN(a, b) (a < b? a: b)
 #define PI 3.14159265359
@@ -80,7 +82,39 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	goOutShader shader;
 	Mouse_Input mouse;
 	Timer timer;
+
+#if mod == 0
 	particles_buffer particles(1000);
+#elif mod == 1
+	// lamda behevior
+	particles_buffer particles(4900, [](std::vector<particle>& buffer, size_t& actives) {
+
+		for (int i = 0; i < actives; i++)
+		{
+			//buffer[i].speed = buffer[i].whole_speed * (buffer[i].life_time / buffer[i].whole_life);
+			float dist = (mouse_pos - buffer[i].pos).norm();
+			float force = dist < 0.03? 0 : 0.02 / dist;
+
+			buffer[i].speed_dir =  (mouse_pos - buffer[i].pos).normalize();
+			buffer[i].speed = force;
+
+			buffer[i].pos += buffer[i].speed_dir * buffer[i].speed * elapsed;
+			buffer[i].rotate = Matrix22f(cosf(buffer[i].rotation_angle), -sinf(buffer[i].rotation_angle),
+				sinf(buffer[i].rotation_angle), cosf(buffer[i].rotation_angle));
+			buffer[i].scale[0][0] = buffer[i].scale_indx;
+			buffer[i].scale[1][1] = buffer[i].scale_indx;
+		}});
+
+	// add some particles
+	for (int i = 0; i < 70; i++)
+		for (int j = 0; j < 70; j++)
+			add_particles(particles, 1, vec2f(-0.7 + 0.02 * j, -0.7 + 0.02 * i), 0.03, vec2f(0, 1), PI * 2);
+#elif mod == 2
+
+#endif
+
+
+
 
 	while (running)
 	{
@@ -113,25 +147,32 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 			}
 		}
-
-		// Simulate
-
-
-		add_particles(particles, rand() % 10, mouse.pos, 0.1, vec2f(0, 1), PI*2, float(rand() % 20 + 30) / 100, float(rand() % 200) / 100);
-
-		particles.calculate();
-
-
-		// Draw
 		// clear screen
 		draw_filled_rect(0, 0, surface.width, surface.height, Color(0, 0, 0));
 
+#if mod == 0
+		// Simulate
+		add_particles(particles, rand() % 10, mouse.pos, 0.1, vec2f(0, 1), PI*2, float(rand() % 20 + 10) / 100, float(rand() % 200) / 100);
+		particles.calculate();
+		// Draw
 		// draw particles
 		for (int i = 0; i < particles.actives; i++)
 		{
 			uni_life_time = particles[i].life_time / particles[i].whole_life;
 			draw_filled_shape(shapes[particles[i].shape], &particles[i], &shader);
 		}
+#elif mod == 1
+		mouse_pos = mouse.pos;
+		particles.calculate();
+		for (int i = 0; i < particles.actives; i++)
+		{
+			uni_dist = (mouse_pos - particles[i].pos).norm();
+			uni_dist = uni_dist > 1 ? 1 : uni_dist;
+			draw_filled_shape(shapes[particles[i].shape], &particles[i], &shader);
+		}
+#elif mod == 2
+
+#endif
 		
 		// Render
 		StretchDIBits(hdc, 0, 0, surface.width, surface.height, 0, 0, surface.width, surface.height, surface.memory, &surface.bitmap_info, DIB_RGB_COLORS, SRCCOPY);

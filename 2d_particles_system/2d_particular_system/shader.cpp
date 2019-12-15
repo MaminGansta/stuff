@@ -12,6 +12,9 @@ struct IShader
 float uni_life_time = 1;
 Color uni_color(255, 0, 0);
 
+// mod == 1
+float uni_dist = 1;
+
 
 struct goOutShader : public IShader
 {
@@ -27,6 +30,10 @@ struct goOutShader : public IShader
 
 	virtual Color fragment() override
 	{
+#if mod == 0
 		return uni_color * uni_life_time;
+#elif mod == 1
+		return uni_color * uni_dist;
+#endif
 	}
 };
