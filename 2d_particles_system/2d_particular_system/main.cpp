@@ -5,6 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include <utility>
+#include <random>
 
 #undef min
 #undef max
@@ -79,7 +80,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	goOutShader shader;
 	Mouse_Input mouse;
 	Timer timer;
-	particles_buffer particles(200);
+	particles_buffer particles(2000);
 
 	float interval = 0.1;
 
@@ -118,9 +119,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// Simulate
 		interval -= timer.elapsed;
 
-		if (interval < 0)
+		//if (interval < 0)
 		{
-			add_particles(particles, rand() % 10, mouse.pos, 0.1, vec2f(0, 1), PI, float(rand() % 500 + 300) / 100, float(rand() % 100) / 100);
+			add_particles(particles, rand() % 10, mouse.pos, 0.1, vec2f(0, 1), PI*2, float(rand() % 20 + 30) / 100, float(rand() % 1000) / 1000);
 			interval = 0.02;
 		}
 
@@ -136,7 +137,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// draw particles
 		for (int i = 0; i < particles.actives; i++)
 		{
-			uni_life_time = particles[i].life_time;
+			uni_life_time = particles[i].life_time / particles[i].whole_life;
 			draw_filled_shape(shapes[particles[i].shape], &particles[i], &shader);
 		}
 		

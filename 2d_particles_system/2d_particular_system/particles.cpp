@@ -25,6 +25,7 @@ struct particle : public object
 	int shape;
 
 	vec2f speed_dir;
+	float whole_speed;
 	float speed;
 
 	float whole_life;
@@ -41,6 +42,7 @@ struct particle : public object
 // global
 float elapsed = 0;
 
+
 void stnd_behavior(std::vector<particle>& buffer, size_t& actives)
 {
 	for (int i = 0; i < actives; i++)
@@ -54,7 +56,7 @@ void stnd_behavior(std::vector<particle>& buffer, size_t& actives)
 		}
 
 		buffer[i].life_time -= elapsed;
-		buffer[i].speed *= (buffer[i].life_time / buffer[i].whole_life);
+		buffer[i].speed -= buffer[i].whole_speed * (buffer[i].life_time / buffer[i].whole_life) * elapsed;
 		buffer[i].pos +=  buffer[i].speed_dir * buffer[i].speed * elapsed;
 		buffer[i].rotate = Matrix22f(cosf(buffer[i].rotation_angle), -sinf(buffer[i].rotation_angle),
 									 sinf(buffer[i].rotation_angle),  cosf(buffer[i].rotation_angle));
@@ -90,9 +92,13 @@ void add_particles(particles_buffer& buffer, int amount, vec2f pos, float scale,
 		buffer.buffer[i].active = true;
 		buffer.buffer[i].pos = pos;
 		buffer.buffer[i].scale_indx = scale;
-		float diviation = float(rand() % int(range * 10000)) / 10000 - range / 2;
+		std::random_device rd;  //Will be used to obtain a seed for the random number engine
+		std::mt19937 gen(rd());
+		std::uniform_real_distribution<> dis(0, range);
+		float diviation = dis(gen) - range/2;
 		buffer.buffer[i].speed_dir = Matrix22f(cosf(diviation), -sinf(diviation), sinf(diviation), cosf(diviation)) * dir.normalize();
 		buffer.buffer[i].speed = speed;
+		buffer.buffer[i].whole_speed = speed;
 		buffer.buffer[i].life_time = life_time;
 		buffer.buffer[i].whole_life = life_time;
 	}
