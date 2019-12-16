@@ -10,7 +10,7 @@
 #undef min
 #undef max
 
-#define mod 2 // 0 1 2 : flame , black hole, gravity
+#define mod 0 // 0 1 2 : flame , black hole, gravity
 
 #define MAX(a, b) (a > b? a: b)
 #define MIN(a, b) (a < b? a: b)
@@ -111,22 +111,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			add_particles(particles, 1, vec2f(-0.7 + 0.02 * j, -0.7 + 0.02 * i), 0.03, vec2f(0, 1), PI * 2);
 #elif mod == 2
 	// lamda behevior
-#define max_speed 1
-	particles_buffer particles(14400, [](std::vector<particle>& buffer, size_t& actives) {
+#define max_speed 0.6
+	particles_buffer particles(10000, [](std::vector<particle>& buffer, size_t& actives) {
 
 		for (int i = 0; i < actives; i++)
 		{
 			//buffer[i].speed = buffer[i].whole_speed * (buffer[i].life_time / buffer[i].whole_life);
 			float dist = pow(mouse_pos.x - buffer[i].pos.x, 2) + pow(mouse_pos.y - buffer[i].pos.y, 2);
 
-			float force = dist < 0.01 ? 0 : 0.007 / dist;
+			float force = dist < 0.01 ? 0 : 0.001 / dist;
 			float force_x = force*(mouse_pos.x - buffer[i].pos.x);
 			float force_y = force*(mouse_pos.y - buffer[i].pos.y);
 
 			buffer[i].speed += force_x;
-			buffer[i].speed = buffer[i].speed > max_speed ? max_speed : buffer[i].speed;
+			buffer[i].speed = fabs(buffer[i].speed) > max_speed ? max_speed * sgn(buffer[i].speed) : buffer[i].speed;
 			buffer[i].speed_y += force_y;
-			buffer[i].speed_y = buffer[i].speed_y > max_speed ? max_speed : buffer[i].speed_y;
+			buffer[i].speed_y = fabs(buffer[i].speed_y) > max_speed ? max_speed * sgn(buffer[i].speed_y) : buffer[i].speed_y;
 
 			buffer[i].pos.x += buffer[i].speed * elapsed;
 			buffer[i].pos.y += buffer[i].speed_y * elapsed;
@@ -138,9 +138,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}});
 
 	// add some particles
-	for (int i = 0; i < 120; i++)
-		for (int j = 0; j < 120; j++)
-			add_particles(particles, 1, vec2f(-0.7 + 0.02 * j, -0.7 + 0.02 * i), 0.03, vec2f(0, 1), PI * 2);
+	for (int i = 0; i < 100; i++)
+		for (int j = 0; j < 100; j++)
+			add_particles(particles, 1, vec2f(-0.7 + 0.02 * j, -0.7 + 0.02 * i), 0.02, vec2f(0, 1), PI * 2);
 #endif
 
 
