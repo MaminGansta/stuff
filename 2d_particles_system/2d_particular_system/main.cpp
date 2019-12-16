@@ -10,7 +10,7 @@
 #undef min
 #undef max
 
-#define mod 0 // 0 1 2 : flame , black hole, gravity
+#define mod 2 // 0 1 2 : flame , black hole, gravity
 
 #define MAX(a, b) (a > b? a: b)
 #define MIN(a, b) (a < b? a: b)
@@ -112,14 +112,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 #elif mod == 2
 	// lamda behevior
 #define max_speed 0.6
-	particles_buffer particles(10000, [](std::vector<particle>& buffer, size_t& actives) {
+	particles_buffer particles(40000, [](std::vector<particle>& buffer, size_t& actives) {
 
 		for (int i = 0; i < actives; i++)
 		{
 			//buffer[i].speed = buffer[i].whole_speed * (buffer[i].life_time / buffer[i].whole_life);
 			float dist = pow(mouse_pos.x - buffer[i].pos.x, 2) + pow(mouse_pos.y - buffer[i].pos.y, 2);
 
-			float force = dist < 0.01 ? 0 : 0.001 / dist;
+			float force = dist < 0.01 ? 0 : 0.004 / dist;
 			float force_x = force*(mouse_pos.x - buffer[i].pos.x);
 			float force_y = force*(mouse_pos.y - buffer[i].pos.y);
 
@@ -138,9 +138,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}});
 
 	// add some particles
-	for (int i = 0; i < 100; i++)
-		for (int j = 0; j < 100; j++)
-			add_particles(particles, 1, vec2f(-0.7 + 0.02 * j, -0.7 + 0.02 * i), 0.02, vec2f(0, 1), PI * 2);
+	for (int i = 0; i < 150; i++)
+		for (int j = 0; j < 150; j++)
+			add_particles(particles, 1, vec2f(-1.2 + 0.02 * j, -1.2 + 0.02 * i), 0.01, vec2f(0, 1), PI * 2);
 #endif
 
 
