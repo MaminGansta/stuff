@@ -112,14 +112,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 #elif mod == 2
 	// lamda behevior
 #define max_speed 1
-	particles_buffer particles(4900, [](std::vector<particle>& buffer, size_t& actives) {
+	particles_buffer particles(14400, [](std::vector<particle>& buffer, size_t& actives) {
 
 		for (int i = 0; i < actives; i++)
 		{
 			//buffer[i].speed = buffer[i].whole_speed * (buffer[i].life_time / buffer[i].whole_life);
 			float dist = pow(mouse_pos.x - buffer[i].pos.x, 2) + pow(mouse_pos.y - buffer[i].pos.y, 2);
 
-			float force = dist < 0.01 ? 0 : 0.006 / dist;
+			float force = dist < 0.01 ? 0 : 0.007 / dist;
 			float force_x = force*(mouse_pos.x - buffer[i].pos.x);
 			float force_y = force*(mouse_pos.y - buffer[i].pos.y);
 
@@ -138,8 +138,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}});
 
 	// add some particles
-	for (int i = 0; i < 70; i++)
-		for (int j = 0; j < 70; j++)
+	for (int i = 0; i < 120; i++)
+		for (int j = 0; j < 120; j++)
 			add_particles(particles, 1, vec2f(-0.7 + 0.02 * j, -0.7 + 0.02 * i), 0.03, vec2f(0, 1), PI * 2);
 #endif
 
@@ -182,7 +182,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 #if mod == 0
 		// Simulate
-		add_particles(particles, rand() % 10, mouse.pos, 0.1, vec2f(0, 1), PI*2, float(rand() % 20 + 10) / 100, float(rand() % 200) / 100);
+		add_particles(particles, rand() % 30, mouse.pos, 0.1, vec2f(0, 1), 2*PI, float(rand() % 30 + 20) / 100, float(rand() % 200) / 100);
 		particles.calculate();
 		// Draw
 		// draw particles

@@ -241,7 +241,7 @@ e_genre = Entry(menu, textvariable=genre)
 e_genre.grid(row=4, column=1, columnspan=2, padx=10)
 
 # button find
-b_find = Button(menu, text="искать", width=6, height=2, bg="black", command=find)
+b_find = Button(menu, text="искать", width=6, height=2, command=find)
 b_find.grid(row=5, column=2, pady=20)
 
 # count and duplicates
