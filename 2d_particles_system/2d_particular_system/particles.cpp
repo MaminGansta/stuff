@@ -27,6 +27,7 @@ struct particle : public object
 	vec2f speed_dir;
 	float whole_speed; // start speed
 	float speed;      // current speed
+	float speed_y{0};
 
 	float whole_life;
 	float life_time; // in secconds

@@ -13,6 +13,7 @@ float uni_life_time = 1;
 Color uni_color(255, 0, 0);
 
 // mod == 1
+Color uni_color2(255, 255, 255);
 float uni_dist = 1;
 
 
@@ -34,6 +35,8 @@ struct goOutShader : public IShader
 		return uni_color * uni_life_time;
 #elif mod == 1
 		return uni_color * uni_dist;
+#elif mod == 2
+		return Color(uni_color2.r, uni_color2.g * uni_dist, uni_color2.b * (1 - uni_dist));
 #endif
 	}
 };

@@ -10,7 +10,7 @@
 #undef min
 #undef max
 
-#define mod 1 // 0 1 2 : flame , black hole, 
+#define mod 2 // 0 1 2 : flame , black hole, gravity
 
 #define MAX(a, b) (a > b? a: b)
 #define MIN(a, b) (a < b? a: b)
@@ -92,8 +92,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		for (int i = 0; i < actives; i++)
 		{
 			//buffer[i].speed = buffer[i].whole_speed * (buffer[i].life_time / buffer[i].whole_life);
-			float dist = (mouse_pos - buffer[i].pos).norm();
-			float force = dist < 0.03? 0 : 0.02 / dist;
+			float dist = pow(mouse_pos.x - buffer[i].pos.x, 2) + pow(mouse_pos.y - buffer[i].pos.y, 2);
+			float force = dist < 0.0005? 0 : 0.006  / dist;
 
 			buffer[i].speed_dir =  (mouse_pos - buffer[i].pos).normalize();
 			buffer[i].speed = force;
@@ -110,7 +110,37 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		for (int j = 0; j < 70; j++)
 			add_particles(particles, 1, vec2f(-0.7 + 0.02 * j, -0.7 + 0.02 * i), 0.03, vec2f(0, 1), PI * 2);
 #elif mod == 2
+	// lamda behevior
+#define max_speed 1
+	particles_buffer particles(4900, [](std::vector<particle>& buffer, size_t& actives) {
 
+		for (int i = 0; i < actives; i++)
+		{
+			//buffer[i].speed = buffer[i].whole_speed * (buffer[i].life_time / buffer[i].whole_life);
+			float dist = pow(mouse_pos.x - buffer[i].pos.x, 2) + pow(mouse_pos.y - buffer[i].pos.y, 2);
+
+			float force = dist < 0.01 ? 0 : 0.006 / dist;
+			float force_x = force*(mouse_pos.x - buffer[i].pos.x);
+			float force_y = force*(mouse_pos.y - buffer[i].pos.y);
+
+			buffer[i].speed += force_x;
+			buffer[i].speed = buffer[i].speed > max_speed ? max_speed : buffer[i].speed;
+			buffer[i].speed_y += force_y;
+			buffer[i].speed_y = buffer[i].speed_y > max_speed ? max_speed : buffer[i].speed_y;
+
+			buffer[i].pos.x += buffer[i].speed * elapsed;
+			buffer[i].pos.y += buffer[i].speed_y * elapsed;
+
+			buffer[i].rotate = Matrix22f(cosf(buffer[i].rotation_angle), -sinf(buffer[i].rotation_angle),
+				sinf(buffer[i].rotation_angle), cosf(buffer[i].rotation_angle));
+			buffer[i].scale[0][0] = buffer[i].scale_indx;
+			buffer[i].scale[1][1] = buffer[i].scale_indx;
+		}});
+
+	// add some particles
+	for (int i = 0; i < 70; i++)
+		for (int j = 0; j < 70; j++)
+			add_particles(particles, 1, vec2f(-0.7 + 0.02 * j, -0.7 + 0.02 * i), 0.03, vec2f(0, 1), PI * 2);
 #endif
 
 
@@ -161,7 +191,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			uni_life_time = particles[i].life_time / particles[i].whole_life;
 			draw_filled_shape(shapes[particles[i].shape], &particles[i], &shader);
 		}
-#elif mod == 1
+#elif mod == 1 || mod == 2
 		mouse_pos = mouse.pos;
 		particles.calculate();
 		for (int i = 0; i < particles.actives; i++)
@@ -170,8 +200,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			uni_dist = uni_dist > 1 ? 1 : uni_dist;
 			draw_filled_shape(shapes[particles[i].shape], &particles[i], &shader);
 		}
-#elif mod == 2
-
 #endif
 		
 		// Render
