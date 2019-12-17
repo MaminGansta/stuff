@@ -26,3 +26,7 @@ struct Color
 		return Color(r * f, g * f, b * f);
 	}
 };
+
+template <typename T> int sgn(T val) {
+	return (T(0) < val) - (val < T(0));
+}

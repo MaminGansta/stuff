@@ -65,18 +65,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 {
 	WNDCLASS window_class = {};
 	window_class.style = CS_HREDRAW | CS_VREDRAW;
-	window_class.lpszClassName = "Paricylar system";
+	window_class.lpszClassName = "base";
 	window_class.lpfnWndProc = win_callback;
 
 	RegisterClass(&window_class);
 
-	HWND window = CreateWindow(window_class.lpszClassName, "particylar system", WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 800, 600, 0, 0, hInstance, 0);
+	HWND window = CreateWindow(window_class.lpszClassName, "base", WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 800, 600, 0, 0, hInstance, 0);
 	HDC hdc = GetDC(window);
 
 	Mouse_Input mouse;
 	Key_Input input;
 	Timer timer;
-
 
 	while (running)
 	{
@@ -85,28 +84,62 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		{
 			switch (msg.message)
 			{
-			case WM_MOUSEMOVE:
-			{
-				int x = LOWORD(msg.lParam);
-				int y = HIWORD(msg.lParam);
-				mouse.pos.x = float(x - surface.width / 2) / surface.height;
-				mouse.pos.y = float(surface.height - y - surface.height / 2) / surface.height;
-			}break;
-			case WM_LBUTTONDOWN:
-			{
-				mouse.buttons[LBUTTON].change = !mouse.buttons[LBUTTON].is_down;
-				mouse.buttons[LBUTTON].is_down = true;
-			}break;
-			case WM_LBUTTONUP:
-			{
-				mouse.buttons[LBUTTON].change = mouse.buttons[LBUTTON].is_down;
-				mouse.buttons[LBUTTON].is_down = false;
-			}break;
-			default:
-			{
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
+				case WM_MOUSEMOVE:
+				{
+					int x = LOWORD(msg.lParam);
+					int y = HIWORD(msg.lParam);
+					mouse.pos.x = float(x - surface.width / 2) / surface.height;
+					mouse.pos.y = float(surface.height - y - surface.height / 2) / surface.height;
+				}break;
+				case WM_LBUTTONDOWN:
+				{
+					mouse.buttons[LBUTTON].changed = !mouse.buttons[LBUTTON].is_down;
+					mouse.buttons[LBUTTON].is_down = true;
+				}break;
+				case WM_LBUTTONUP:
+				{
+					mouse.buttons[LBUTTON].changed = mouse.buttons[LBUTTON].is_down;
+					mouse.buttons[LBUTTON].is_down = false;
+				}break;
+				case WM_KEYUP:
+				case WM_KEYDOWN:
+				{
+					uint32_t vk_code = (uint32_t)msg.wParam;
+					bool is_down = ((msg.lParam & (1 << 31)) == 0);
+
+					switch (vk_code)
+					{
+						case VK_LEFT:
+						{
+							input.buttons[BUTTON_LEFT].changed = input.buttons[BUTTON_LEFT].is_down != is_down;
+							input.buttons[BUTTON_LEFT].is_down = is_down;
+
+						}break;
+						case VK_RIGHT:
+						{
+							input.buttons[BUTTON_RIGHT].changed = input.buttons[BUTTON_RIGHT].is_down != is_down;
+							input.buttons[BUTTON_RIGHT].is_down = is_down;
+
+						}break;
+						case VK_UP:
+						{
+							input.buttons[BUTTON_UP].changed = input.buttons[BUTTON_UP].is_down != is_down;
+							input.buttons[BUTTON_UP].is_down = is_down;
+
+						}break;
+						case VK_DOWN:
+						{
+							input.buttons[BUTTON_DOWN].changed = input.buttons[BUTTON_DOWN].is_down != is_down;
+							input.buttons[BUTTON_DOWN].is_down = is_down;
+
+						}break;
+					}
+				}
+				default:
+				{
+					TranslateMessage(&msg);
+					DispatchMessage(&msg);
+				}
 			}
 		}
 		
@@ -116,7 +149,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// Draw
 		// clear screen
 		draw_filled_rect(0, 0, surface.width, surface.height, Color(0, 0, 0));
-
 
 
 		// Render

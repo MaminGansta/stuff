@@ -77,14 +77,14 @@ struct vec3
 		return vec3<T>(x + b.x, y + b.y, z + b.z);
 	}
 
-	inline vec3<T> operator - (vec3<T> other)
+	inline vec3<T> operator - (vec3<T> b)
 	{
 		return vec3<T>(x - b.x, y - b.y, z - b.z);
 	}
 
 	inline vec3<T> operator * (float scalar)
 	{
-		return vec3<T>(x * b.x, y * b.y, z * b.z);
+		return vec3<T>(x * scalar, y * scalar, z * scalar);
 	}
 
 	inline T& operator [] (int inx)

@@ -1,26 +1,32 @@
 
-
-struct Button_state
-{
-	bool is_down{false};
-	bool changed{false};
-};
-
+// mouse
 
 enum Mouse_buttons
 {
-	M_LBUTTON,
-	M_RBUTTON,
+	LBUTTON,
+	RBUTTON,
 
-	MBUTTONS_COUNT
+	MOUSE_BUTTONS_COUNT
 };
 
-struct Mouse_input
+
+struct Buttons
 {
-	uint16_t x, y;
-	Button_state buttons[MBUTTONS_COUNT];
+	bool is_down{ false };
+	bool changed{ false };
+	bool pressed{ false };
 };
 
+
+struct Mouse_Input
+{
+	vec2f pos;
+	Buttons buttons[MOUSE_BUTTONS_COUNT];
+};
+
+
+
+// keyboard
 
 enum Keyboard_buttons
 {
@@ -28,12 +34,32 @@ enum Keyboard_buttons
 	BUTTON_DOWN,
 	BUTTON_LEFT,
 	BUTTON_RIGHT,
-	BUTTON_SHOOT,
 
-	BUTTON_COUNT
+	BUTTONS_COUNT
 };
 
-struct Key_input
+
+struct Key_Input
 {
-	Button_state buttons[BUTTON_COUNT];
+	Buttons buttons[BUTTONS_COUNT];
+
+	Key_Input()
+	{
+		for (int i = 0; i < BUTTONS_COUNT; i++)
+		{
+			buttons[i].is_down = false;
+			buttons[i].changed = false;
+		}
+	}
+
+	void discard()
+	{
+		for (int i = 0; i < BUTTONS_COUNT; i++)
+		{
+			buttons[i].is_down = false;
+			buttons[i].changed = false;
+		}
+	}
 };
+
+

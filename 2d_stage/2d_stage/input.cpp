@@ -13,7 +13,7 @@ enum Mouse_buttons
 struct Buttons
 {
 	bool is_down{ false };
-	bool change{ false };
+	bool changed{ false };
 	bool pressed{ false };
 };
 
@@ -28,26 +28,27 @@ struct Mouse_Input
 
 // keyboard
 
-enum Key_Buttons
+enum Keyboard_buttons
 {
-	P1_UP,
-	P1_DOWN,
-	P2_UP,
-	P2_DOWN,
+	BUTTON_UP,
+	BUTTON_DOWN,
+	BUTTON_LEFT,
+	BUTTON_RIGHT,
 
 	BUTTONS_COUNT
 };
 
+
 struct Key_Input
 {
-	Buttons buttons[MOUSE_BUTTONS_COUNT];
+	Buttons buttons[BUTTONS_COUNT];
 
 	Key_Input()
 	{
 		for (int i = 0; i < BUTTONS_COUNT; i++)
 		{
 			buttons[i].is_down = false;
-			buttons[i].change= false;
+			buttons[i].changed = false;
 		}
 	}
 
@@ -56,7 +57,7 @@ struct Key_Input
 		for (int i = 0; i < BUTTONS_COUNT; i++)
 		{
 			buttons[i].is_down = false;
-			buttons[i].change = false;
+			buttons[i].changed = false;
 		}
 	}
 };
