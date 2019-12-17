@@ -117,7 +117,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		for (int i = 0; i < actives; i++)
 		{
 			//buffer[i].speed = buffer[i].whole_speed * (buffer[i].life_time / buffer[i].whole_life);
-			float dist = pow(mouse_pos.x - buffer[i].pos.x, 2) + pow(mouse_pos.y - buffer[i].pos.y, 2);
+			float dist = pow(mouse_pos.x - buffer[i].pos.x, 4) + pow(mouse_pos.y - buffer[i].pos.y, 4);
 
 			float force = dist < 0.01 ? 0 : 0.004 / dist;
 			float force_x = force*(mouse_pos.x - buffer[i].pos.x);
@@ -138,9 +138,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}});
 
 	// add some particles
-	for (int i = 0; i < 150; i++)
-		for (int j = 0; j < 150; j++)
-			add_particles(particles, 1, vec2f(-1.2 + 0.02 * j, -1.2 + 0.02 * i), 0.01, vec2f(0, 1), PI * 2);
+	for (int i = 0; i < 200; i++)
+		for (int j = 0; j < 200; j++)
+			add_particles(particles, 1, vec2f(-2 + 0.02 * j, -2 + 0.02 * i), 0.01, vec2f(0, 1), PI * 2);
 #endif
 
 
