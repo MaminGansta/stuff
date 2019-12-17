@@ -26,7 +26,10 @@ struct particle : public object
 
 	vec2f speed_dir;
 	float whole_speed; // start speed
-	float speed;      // current speed
+	union {
+		float speed;      // current speed
+		float speed_x;
+	};
 	float speed_y{0};
 
 	float whole_life;
@@ -38,14 +41,8 @@ struct particle : public object
 	particle() = default;
 };
 
-
-
 // global
 float elapsed = 0;
-
-// for second mod
-vec2f mouse_pos;
-
 
 void stnd_behavior(std::vector<particle>& buffer, size_t& actives)
 {

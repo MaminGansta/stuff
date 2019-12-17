@@ -7,9 +7,6 @@
 #include <utility>
 #include <random>
 
-#undef min
-#undef max
-
 #define MAX(a, b) (a > b? a: b)
 #define MIN(a, b) (a < b? a: b)
 #define PI 3.14159265359
@@ -22,7 +19,7 @@ bool running = true;
 #include "particles.cpp"
 #include "shader.cpp"
 #include "draw.cpp"
-#include "mouse_input.cpp"
+#include "input.cpp"
 #include "timer.cpp"
 
 
@@ -54,7 +51,6 @@ LRESULT CALLBACK win_callback(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			surface.bitmap_info.bmiHeader.biPlanes = 1;
 			surface.bitmap_info.bmiHeader.biBitCount = 32;
 			surface.bitmap_info.bmiHeader.biCompression = BI_RGB;
-
 		} break;
 		default:
 		{
@@ -78,6 +74,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	HDC hdc = GetDC(window);
 
 	Mouse_Input mouse;
+	Key_Input input;
 	Timer timer;
 
 
@@ -97,13 +94,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}break;
 			case WM_LBUTTONDOWN:
 			{
-				mouse.buttons[LBUTTON].change = !mouse.buttons[LBUTTON].is_dawn;
-				mouse.buttons[LBUTTON].is_dawn = true;
+				mouse.buttons[LBUTTON].change = !mouse.buttons[LBUTTON].is_down;
+				mouse.buttons[LBUTTON].is_down = true;
 			}break;
 			case WM_LBUTTONUP:
 			{
-				mouse.buttons[LBUTTON].change = mouse.buttons[LBUTTON].is_dawn;
-				mouse.buttons[LBUTTON].is_dawn = false;
+				mouse.buttons[LBUTTON].change = mouse.buttons[LBUTTON].is_down;
+				mouse.buttons[LBUTTON].is_down = false;
 			}break;
 			default:
 			{
@@ -112,8 +109,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 			}
 		}
+		
+		//  Simulate
+
+
+		// Draw
 		// clear screen
 		draw_filled_rect(0, 0, surface.width, surface.height, Color(0, 0, 0));
+
 
 
 		// Render

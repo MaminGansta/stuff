@@ -146,8 +146,8 @@ void triangle(vec3f* pts, IShader* shader)
 {
 	if (pts[0].y == pts[1].y && pts[0].y == pts[2].y) return; // i don't care about degenerate triangles
 	
-	vec2f bot_left(std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
-	vec2f top_right(std::numeric_limits<float>::min(), std::numeric_limits<float>::min());
+	vec2f bot_left((std::numeric_limits<float>::max)(), (std::numeric_limits<float>::max)());
+	vec2f top_right((std::numeric_limits<float>::min)(), (std::numeric_limits<float>::min)());
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 2; j++)

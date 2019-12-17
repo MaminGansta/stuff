@@ -32,7 +32,7 @@ struct vec2
 		return *this;
 	}
 
-	vec2<T>& operator *= (T lenght)
+	vec2<T>& operator *= (float lenght)
 	{
 		x *= lenght;
 		y *= lenght;
@@ -72,28 +72,19 @@ struct vec3
 	template <typename U>
 	inline vec3(vec2<U> v) : x(v.x), y(v.y), z(0) {}
 
-	inline vec3<T>& operator + (vec3<T> other)
+	inline vec3<T> operator + (vec3<T> b)
 	{
-		x += other.x;
-		y += other.y;
-		z += other.z;
-		return *this;
+		return vec3<T>(x + b.x, y + b.y, z + b.z);
 	}
 
-	inline vec3<T>& operator - (vec3<T> other)
+	inline vec3<T> operator - (vec3<T> other)
 	{
-		x -= other.x;
-		y -= other.y;
-		z -= other.z;
-		return *this;
+		return vec3<T>(x - b.x, y - b.y, z - b.z);
 	}
 
-	inline vec3<T>& operator * (float scalar)
+	inline vec3<T> operator * (float scalar)
 	{
-		x *= scalar;
-		y *= scalar;
-		z *= scalar;
-		return *this;
+		return vec3<T>(x * b.x, y * b.y, z * b.z);
 	}
 
 	inline T& operator [] (int inx)
