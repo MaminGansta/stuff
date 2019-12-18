@@ -6,7 +6,7 @@ struct Ship : public object
 	float angle{PI / 2};
 	float speed_x{0};
 	float speed_y{0};
-	float speed_dif{0.005};
+	float speed_dif{0.5};
 
 	void calculate()
 	{
@@ -16,7 +16,7 @@ struct Ship : public object
 		if (fabs(pos.y) > 0.5)
 			pos.y = sgn(-pos.y) * 0.49;
 
-
+		
 		pos.x += speed_x * elapsed;
 		pos.y += speed_y * elapsed;
 		rotate = Matrix22f(cosf(angle), -sinf(angle),

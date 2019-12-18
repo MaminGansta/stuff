@@ -67,12 +67,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 {
 	WNDCLASS window_class = {};
 	window_class.style = CS_HREDRAW | CS_VREDRAW;
-	window_class.lpszClassName = "Paricylar system";
+	window_class.lpszClassName = "Asteroids";
 	window_class.lpfnWndProc = win_callback;
 
 	RegisterClass(&window_class);
 
-	HWND window = CreateWindow(window_class.lpszClassName, "particylar system", WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 800, 600, 0, 0, hInstance, 0);
+	HWND window = CreateWindow(window_class.lpszClassName, "Asteroids", WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 800, 600, 0, 0, hInstance, 0);
 	HDC hdc = GetDC(window);
 
 	Mouse_Input mouse;
@@ -81,6 +81,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	Ship ship;
 	Ship_shader ship_shader;
+
+	// stars
+	Star_shader star_shader;
+	particles_buffer stars(20);
+	for (int i = 0; i < 20; i++)
+		add_particles(stars, 1, vec2f(float(rand() % 50) / 50 - 0.5, float(rand() % 50) / 50 - 0.5), 0.03, vec2f(1,0), 0, (rand() % 100)/100, rand() % 20000);
+
+	// rocket flame
+	goOutShader flame_shader;
+	particles_buffer flame(200);
 
 
 	while (running)
@@ -154,13 +164,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// input handler
 		if (input.buttons[BUTTON_UP].is_down)
 		{
-			ship.speed_x += ship.speed_dif * cosf(ship.angle);
-			ship.speed_y += ship.speed_dif * sinf(ship.angle);
+			ship.speed_x += ship.speed_dif * cosf(ship.angle) * elapsed;
+			ship.speed_y += ship.speed_dif * sinf(ship.angle) * elapsed;
+
+			for (int i = 0; i < 20; i++)
+				add_particles(flame, rand() % 5, ship.pos, 0.05, vec2f(-cosf(ship.angle), -sinf(ship.angle)), PI / 3, float(rand() % 30 + 30) / 100, float(rand() % 150) / 100);
 		}
 		else
 		{
-			ship.speed_x = fabs(ship.speed_x) < 0.00000000001 ? 0 : ship.speed_x + sgn(-ship.speed_x) * ship.speed_dif * fabs(cosf(ship.angle));
-			ship.speed_y = fabs(ship.speed_y) < 0.00000000001 ? 0 : ship.speed_y + sgn(-ship.speed_y) * ship.speed_dif * fabs(sinf(ship.angle));
+			ship.speed_x = fabs(ship.speed_x) < 0.00001 ? 0 : ship.speed_x + sgn(-ship.speed_x) * ship.speed_dif * elapsed;
+			ship.speed_y = fabs(ship.speed_y) < 0.00001 ? 0 : ship.speed_y + sgn(-ship.speed_y) * ship.speed_dif * elapsed;
 		}
 
 		if (input.buttons[BUTTON_LEFT].is_down)
@@ -170,8 +183,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			ship.angle -= PI* elapsed;
 
 		ship.calculate();
-
-		// collision detection
+		stars.calculate();
+		flame.calculate();
 
 
 
@@ -180,6 +193,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// clear screen
 		draw_filled_rect(0, 0, surface.width, surface.height, Color(0, 0, 0));
 
+		// draw stars
+		for (int i = 0; i < stars.actives; i++)
+		{
+			uni_star_life = stars[i].life_time;
+			draw_filled_shape(shapes[stars[i].shape], stars[i], &star_shader);
+		}
+
+		for (int i = 0; i < flame.actives; i++)
+		{
+			uni_life_time = flame[i].life_time;
+			draw_filled_shape(shapes[flame[i].shape], flame[i], &flame_shader);
+		}
+		//
 		draw_shape(ship.pts, ship, &ship_shader);
 
 
