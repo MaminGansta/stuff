@@ -13,7 +13,7 @@ struct Color
 {
 	union
 	{
-		struct { uint8_t g, b, r, a; };
+		struct { uint8_t b, g, r, a; };
 		uint8_t raw[4];
 		uint32_t whole;
 	};

@@ -10,10 +10,9 @@ struct IShader
 // globals (uniform)
 // life time of current partical
 float uni_life_time = 1;
-Color uni_color(255, 0, 0);
 
 // particles shader
-struct goOutShader : public IShader
+struct flame_shader : public IShader
 {
 	void vertex(vec2f* pts, vec3f* screen_pts, object& obj) override
 	{
@@ -27,7 +26,7 @@ struct goOutShader : public IShader
 
 	Color fragment() override
 	{
-		return uni_color * uni_life_time;
+		return Color(255, 60, 0) * uni_life_time;
 	}
 };
 
