@@ -93,8 +93,6 @@ void add_particles(particles_buffer& buffer, int amount, vec2f pos, float scale,
 		buffer.buffer[i].active = true;
 		buffer.buffer[i].pos = pos;
 		buffer.buffer[i].scale_indx = scale;
-		std::random_device rd;  //Will be used to obtain a seed for the random number engine
-		std::mt19937 gen(rd());
 		std::uniform_real_distribution<> dis(0, range);
 		float diviation = dis(gen) - range/2;
 		buffer.buffer[i].speed_dir = Matrix22f(cosf(diviation), -sinf(diviation), sinf(diviation), cosf(diviation)) * dir.normalize();

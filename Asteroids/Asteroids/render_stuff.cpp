@@ -30,3 +30,6 @@ struct Color
 template <typename T> int sgn(T val) {
 	return (T(0) < val) - (val < T(0));
 }
+
+std::random_device rd;  //Will be used to obtain a seed for the random number engine
+std::mt19937 gen(rd());

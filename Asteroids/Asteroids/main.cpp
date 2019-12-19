@@ -92,6 +92,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	flame_shader flame_shader;
 	particles_buffer flame(1000);
 
+	// asteroids
+	Asteroid_buffer asteroids(3);
+
 
 	while (running)
 	{
@@ -149,6 +152,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 							input.buttons[BUTTON_DOWN].is_down = is_down;
 
 						}break;
+						case VK_ESCAPE:
+						{
+							running = false;
+						}break;
 					}
 				}
 				default:
@@ -188,9 +195,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ship.calculate();
 		stars.calculate();
 		flame.calculate();
+		asteroids.calculate();
 
 
-
+		add_asteroid(asteroids, 1, 0);
 
 		// Draw
 		// clear screen
@@ -208,9 +216,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			uni_life_time = flame[i].life_time > 1 ? 1 : flame[i].life_time;
 			draw_filled_shape(shapes[flame[i].shape], flame[i], &flame_shader);
 		}
-		//
+
+		// ship
 		draw_shape(ship.pts, ship, &ship_shader);
 
+		for (int i = 0; i < asteroids.actives; i++)
+		{
+			draw_shape(asteroids_shape[asteroids[i].shape], asteroids[i], &ship_shader);
+		}
 
 		// Render
 		StretchDIBits(hdc, 0, 0, surface.width, surface.height, 0, 0, surface.width, surface.height, surface.memory, &surface.bitmap_info, DIB_RGB_COLORS, SRCCOPY);
