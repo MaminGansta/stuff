@@ -64,7 +64,6 @@ inline void drawLine(int x, int y, int x2, int y2, IShader* shader) {
 	}
 }
 
-
 inline void draw_rect(int x0, int y0, int x1, int y1, Color color)
 {
 	for (int y = y0; y < y1; y++)
@@ -87,6 +86,20 @@ inline void draw_filled_rect(int x0, int y0, int x1, int y1, Color color)
 		for (int x = x0; x < x1; x++)
 			drawPixel(x, y, color);
 }
+
+inline void draw_filled_circle(vec2f center, float radius, Color color)
+{
+	int x = center.x * surface.height + surface.width / 2;
+	int y = center.y * surface.height + surface.height / 2;
+	radius *= surface.width / 2;
+
+	for (int i = -radius; i < radius; i++)
+		for (int j = -radius; j < radius; j++)
+			if (i*i + j*j < radius * radius)
+				drawPixel(x + i, y + j, color);
+
+}
+
 
 
 inline void draw_shape(std::vector<vec2f>& pts, object& obj, IShader* shader)

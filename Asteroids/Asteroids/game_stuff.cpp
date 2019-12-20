@@ -63,17 +63,20 @@ void add_asteroid(Asteroid_buffer& buffer, float scale, float diviation)
 	if (buffer.actives == buffer.size)
 		return;
 
-	buffer.buffer[buffer.actives].shape = rand() % 5;
+	std::uniform_int_distribution<> r_shape(0, 4);
+	buffer.buffer[buffer.actives].shape = r_shape(gen);
 	buffer.buffer[buffer.actives].scale = scale;
-	std::uniform_real_distribution<> r(0.5, 0.1);
-	int sgn1 = sgn(r(gen));
-	int sgn2 = sgn(r(gen));
-	float x = r(gen) * sgn1;
-	float y = r(gen) * sgn2;
+	std::uniform_real_distribution<> r(0, 2*PI);
+	float angle = r(gen);
+	float x = cosf(angle) * 0.8;
+	float y = sinf(angle) * 0.8;
 	buffer.buffer[buffer.actives].pos = vec2f(x, y);
 
-	buffer.buffer[buffer.actives].speed_x = -x / 2;
-	buffer.buffer[buffer.actives].speed_y = -y / 2;
+	std::uniform_real_distribution<> div(0, diviation);
+	std::uniform_real_distribution<> speed(0.1, 0.3);
+
+	buffer.buffer[buffer.actives].speed_x = -cosf(angle + div(gen)) * speed(gen);
+	buffer.buffer[buffer.actives].speed_y = -sinf(angle + div(gen)) * speed(gen);
 	buffer.actives++;
 } 
 

@@ -10,7 +10,7 @@
 #undef min
 #undef max
 
-#define mod 2 // 0 1 2 : flame , black hole, gravity
+#define mod 0 // 0 1 2 : flame , black hole, gravity
 
 #define MAX(a, b) (a > b? a: b)
 #define MIN(a, b) (a < b? a: b)
@@ -119,7 +119,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			//buffer[i].speed = buffer[i].whole_speed * (buffer[i].life_time / buffer[i].whole_life);
 			float dist = pow(mouse_pos.x - buffer[i].pos.x, 2) + pow(mouse_pos.y - buffer[i].pos.y, 2);
 
-			float force = dist < 0.01 ? 0 : 0.006 / dist;
+			float force = dist < 0.01 ? 0 : 0.003 / dist;
 			float force_x = force*(mouse_pos.x - buffer[i].pos.x);
 			float force_y = force*(mouse_pos.y - buffer[i].pos.y);
 

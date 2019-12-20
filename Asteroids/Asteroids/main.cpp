@@ -93,7 +93,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	particles_buffer flame(1000);
 
 	// asteroids
-	Asteroid_buffer asteroids(3);
+	Asteroid_buffer asteroids(10);
 
 
 	while (running)
@@ -198,7 +198,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		asteroids.calculate();
 
 
-		add_asteroid(asteroids, 1, 0);
+		add_asteroid(asteroids, 1, PI/3);
+
+		// ateroids handler
+		for (int i = 0; i < asteroids.actives; i++)
+		{
+			if (fabs(asteroids[i].pos.x) > 0.8 || fabs(asteroids[i].pos.y) > 0.6)
+			{
+				using std::swap;
+				swap(asteroids[i--], asteroids[--asteroids.actives]);
+			}
+		}
 
 		// Draw
 		// clear screen
@@ -224,6 +234,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		{
 			draw_shape(asteroids_shape[asteroids[i].shape], asteroids[i], &ship_shader);
 		}
+
 
 		// Render
 		StretchDIBits(hdc, 0, 0, surface.width, surface.height, 0, 0, surface.width, surface.height, surface.memory, &surface.bitmap_info, DIB_RGB_COLORS, SRCCOPY);
