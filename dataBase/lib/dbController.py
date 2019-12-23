@@ -16,7 +16,8 @@ class DataBase:
             "illustr INTEGER,"
             "collection INTEGER,"
             "cost INTEGER,"
-            "here TEXT)")
+            "here TEXT,"
+            "image_id INTEGER)")
 
         # create authors table
         self.cursor.execute(
@@ -38,6 +39,12 @@ class DataBase:
             "genre_id INTEGER,"
             "author_id INTEGER,"
             "comment TEXT)")
+
+        # create image table
+        self.cursor.execute(
+            "CREATE TABLE IF NOT EXISTS images("
+            "image_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
+            "image_name TEXT)")
 
 
     # str => "str" for sql query
@@ -77,7 +84,7 @@ class DataBase:
                                          " a.author_name == ", self.wrap(author),
                                          " g.genre_name == ", self.wrap(genre))
 
-        self.cursor.execute(f"SELECT b.book_name, c.compos_name, a.author_name, g.genre_name, b.year, b.here "
+        self.cursor.execute(f"SELECT b.book_name, c.compos_name, a.author_name, g.genre_name, b.year, b.cost, b.here "
                             f"FROM books as b NATURAL JOIN compositions as c "
                             f"NATURAL JOIN authors as a NATURAL JOIN genres as g {where} " + query_end)
         return self.cursor.fetchall()
@@ -117,9 +124,10 @@ class DataBase:
     # dublicates in books
     def duplicates(self):
         self.cursor.execute("SELECT COUNT(1) FROM books")
-        dubls = self.cursor.fetchone()
-        self.cursor.execute("SELECT COUNT(DISTINCT book_name) FROM books")
-        res = dubls[0] - self.cursor.fetchone()[0]
+        all = self.cursor.fetchone()
+        self.cursor.execute("SELECT COUNT(*) "
+                            "from (select DISTINCT book_name, author_id FROM books NATURAL JOIN compositions)")
+        res = all[0] - self.cursor.fetchone()[0]
         return res
 
 

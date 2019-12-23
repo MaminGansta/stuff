@@ -3,6 +3,7 @@ import sqlite3
 from tkinter import *
 import tkinter as tk
 import tkinter.ttk as ttk
+from PIL import ImageTk, Image
 
 
 connection = sqlite3.connect("data/data_base.db")
@@ -10,6 +11,13 @@ cursor = connection.cursor()
 
 db = DataBase(connection)
 db.create_tables()
+
+def show_image(parent, name):
+    root = tk.Tk()
+    img = ImageTk.PhotoImage(Image.open(name))
+    panel = tk.Label(root, image=img)
+    panel.pack(side="bottom", fill="both", expand="yes")
+    root.mainloop()
 
 
 # new window with table
@@ -24,15 +32,16 @@ class Table(tk.Frame):
 
         for head in headings:
             table.heading(head, text=head, anchor=tk.CENTER)
-            table.column(head, anchor=tk.CENTER)
+            table.column(head, anchor=tk.CENTER, width=130, minwidth=130)
 
         for row in rows:
             table.insert('', tk.END, values=row)
 
         scrolltable = tk.Scrollbar(self, command=table.yview)
+
         table.configure(yscrollcommand=scrolltable.set)
         scrolltable.pack(side=tk.RIGHT, fill=tk.Y)
-        table.pack(expand=tk.YES, fill=tk.BOTH)
+        table.pack(expand=tk.YES, fill=BOTH)
 
         window.transient(root)
         window.focus_set()
@@ -124,10 +133,10 @@ def window_take_return_book():
 def find():
     heading = ("",)
     res = ("",)
-    if table.get() == "book":
+    if s_table.get() == "book":
         res = db.find_book(name.get().strip(), author.get().strip(), genre.get().strip())
-        heading = ("книга", "произведение", "автор", "жанр", "год", "наличие")
-    elif table.get() == "compos":
+        heading = ("книга", "произведение", "автор", "жанр", "год", "цена", "наличие")
+    elif s_table.get() == "compos":
         res = db.find_compos(name.get().strip(), author.get().strip(), genre.get().strip())
         heading = ("произведение", "автор", "жанр", "комментарий")
 
@@ -172,18 +181,17 @@ def tuple_array_to_s(out):
     return res
 
 
-
 # init window class
 root = Tk()
 root.resizable(0, 0)
 root.title("библиотека")
 
 # out text field ------------------------------------------
-canvas = Canvas(root, height=600, width=800, bg="white")
+canvas = Canvas(root, height=600, width=1000, bg="white")
 canvas.pack(side="left")
 
 menu = tk.Frame(canvas, bg="#FFAA00")
-menu.place(relwidth=0.4, relheight=1, relx=0.6)
+menu.place(relwidth=0.4, relheight=1, relx=0.65)
 
 
 frame = tk.Frame(canvas, bg="#FFFFFF")
@@ -191,22 +199,28 @@ frame.place(relwidth=0.6, relheight=1)
 
 
 # output
-output_text = Text(frame, width=64, height=50)
+output_text = Text(frame, width=90, height=50)
 output_text.pack(side="left")
 
 # vertical scroll bar
 scrollbar = Scrollbar(frame, command=output_text.yview)
 scrollbar.pack(side='right', fill="y")
 output_text['yscrollcommand'] = scrollbar.set
+
+# horizontal
+# hscrollbar = Scrollbar(frame, command=output_text.yview, orient=HORIZONTAL)
+# hscrollbar.pack(side='top', fill="x")
+# output_text['yscrollcommand'] = hscrollbar.set
+
 # ---------------------------------------------------------
 
 
 # table radio
 l_table = Label(menu, text="таблица", font="area 12", bg="#FFCC00")
 l_table.grid(row=0, column=0, pady=10, ipadx=18)
-table = StringVar()
-r_table1 = Radiobutton(menu, text="книги", variable=table, value="book", bg="#FFAA00")
-r_table2 = Radiobutton(menu, text="произведения", variable=table, value="compos", bg="#FFAA00")
+s_table = StringVar()
+r_table1 = Radiobutton(menu, text="книги", variable=s_table, value="book", bg="#FFAA00")
+r_table2 = Radiobutton(menu, text="произведения", variable=s_table, value="compos", bg="#FFAA00")
 r_table1.grid(row=0, column=1, padx=10)
 r_table2.grid(row=0, column=2)
 
