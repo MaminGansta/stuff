@@ -1,13 +1,3 @@
-#include <math.h>
-#include <limits>
-#include <stdint.h>
-#include <algorithm>
-
-#undef max
-#undef min
-
-#define MAX(a, b) (a > b? a: b)
-#define MIN(a, b) (a < b? a: b)
 
 inline void drawPixel(int x, int y, Color color) {
 	// cheker

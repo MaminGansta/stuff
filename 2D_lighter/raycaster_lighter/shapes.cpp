@@ -6,7 +6,7 @@ struct Line
 	float lenght{0};
 
 	inline Line() = default;
-	inline Line(Vert2f pos, Vec2f dir, int lenght) : pos(pos), dir(dir), lenght(lenght) {}
+	inline Line(Vert2f pos, Vec2f dir, float lenght) : pos(pos), dir(dir), lenght(lenght) {}
 
 	void draw(Color color = Color(255, 255, 255))
 	{

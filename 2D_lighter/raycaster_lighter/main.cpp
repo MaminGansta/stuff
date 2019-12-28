@@ -3,6 +3,17 @@
 #include <vector>
 #include <algorithm>
 #include <cstdint>
+#include <cmath>
+#include <chrono>
+#include <thread>
+#include <math.h>
+#include <limits>
+
+#undef max
+#undef min
+
+#define MAX(a, b) (a > b? a: b)
+#define MIN(a, b) (a < b? a: b)
 
 
 // options ------------------------------------------------
@@ -12,7 +23,7 @@
 #define LINES  0x00
 #define TRIANGLES  0x01
 
-#define SCREEN_MODE  BIG_SCREEN  // CHANGE THIS PARAM TO THE BIG_SCREEN
+#define SCREEN_MODE  SMALL_SCREEN  // CHANGE THIS PARAM TO THE BIG_SCREEN
 #define DRAW_MODE  TRIANGLES     // CHANGE TO LINES
 
 // draw defines  ------------------------------------------

@@ -1,5 +1,3 @@
-#include  <Windows.h>
-
 struct Render_State {
 	int height, width;
 	uint32_t* memory;
