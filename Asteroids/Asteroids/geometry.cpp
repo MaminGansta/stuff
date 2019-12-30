@@ -39,17 +39,31 @@ struct vec2
 		return *this;
 	}
 
+	inline bool operator == (vec2<T> other)
+	{
+		return x == other.x && y == other.y;
+	}
+
+	inline bool operator == (vec2<T>& const other) const
+	{
+		return x == other.x && y == other.y;
+	}
+
 	float norm()
 	{
 		return std::sqrt(x * x + y * y);
 	}
 
-	inline vec2<T>& normalize()
+	inline vec2<T>& normalize_yourself()
 	{
 		*this = (*this) * (1.0f / norm());
 		return *this;
 	}
 
+	inline vec2<T> normalize()
+	{
+		return (*this) * (1.0f / norm());
+	}
 
 	inline T& operator [] (int inx)
 	{
@@ -102,7 +116,6 @@ struct vec3
 		*this = (*this) * (1.0f / norm());
 		return *this;
 	}
-
 };
 
 typedef vec2<int> vec2i;
@@ -122,9 +135,9 @@ inline float dproduct(vec3<T> a, vec3<T> b)
 }
 
 template <typename T>
-inline int dproduct(vec2<T> a, vec2<T> b)
+inline double dproduct(vec2<T> a, vec2<T> b)
 {
-	int res = 0;
+	double res = 0;
 	for (int i = 0; i < 2; i++)
 		res += a[i] * b[i];
 
@@ -163,6 +176,29 @@ inline bool barycentric(vec3f A, vec3f B, vec3f C, vec3i P, vec3f* out) {
 	}
 	return false;
 }
+
+inline bool fbarycentric(vec3f A, vec3f B, vec3f C, vec3f P, vec3f* out)
+{
+	vec3f s[2];
+	for (int i = 0; i < 2; i++)
+	{
+		s[i][0] = C[i] - A[i];
+		s[i][1] = B[i] - A[i];
+		s[i][2] = A[i] - P[i];
+	}
+	vec3f u = cross(s[0], s[1]);
+	//if (std::abs(u[2]) > 1e-2)
+	{
+		out->x = 1.0f - (u.x + u.y) / u.z;
+		out->y = u.y / u.z;
+		out->z = u.x / u.z;
+		if ((out->x > 0 && out->y > 0 && out->z >= 0) &&
+		    (fabs(out->x + out->y + out->z) < 0.001))
+			return true;
+	}
+	return false;
+}
+
 
 
 #define identity 1

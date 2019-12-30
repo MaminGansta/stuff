@@ -68,7 +68,9 @@ struct Star_shader : public IShader
 
 
 // ship shader
-struct Ship_shader : public IShader
+Color uni_shape_color = Color(255, 255, 255);
+
+struct line_shader : public IShader
 {
 	void vertex(vec2f* pts, vec3f* screen_pts, object& obj) override
 	{
@@ -83,6 +85,6 @@ struct Ship_shader : public IShader
 
 	Color fragment() override
 	{
-		return Color(255, 255, 255);
+		return uni_shape_color;
 	}
 };

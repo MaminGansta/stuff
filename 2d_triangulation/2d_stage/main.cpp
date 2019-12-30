@@ -203,8 +203,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 		
 		//  Simulate
-		static int a = 0;
-		a = (a + 1) % 5;
+		static int a = 4;
+		//a = (a + 1) % 5;
 		std::vector<vec2f> shape = shapes[a];
 
 		object obj(vec2f(0, 0));

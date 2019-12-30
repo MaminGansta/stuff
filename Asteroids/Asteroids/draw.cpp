@@ -101,7 +101,6 @@ inline void draw_filled_circle(vec2f center, float radius, Color color)
 }
 
 
-
 inline void draw_shape(std::vector<vec2f>& pts, object& obj, IShader* shader)
 {
 	for (int i = 0; i < pts.size() - 1; i++)
@@ -175,7 +174,6 @@ void triangle(vec3f* pts, IShader* shader)
 				top_right[j] = MIN(surface.height, MAX(top_right[j], pts[i][j]));
 			else
 				top_right[j] = MIN(surface.width, MAX(top_right[j], pts[i][j]));
-
 		}
 	}
 

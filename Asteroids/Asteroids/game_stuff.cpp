@@ -2,7 +2,11 @@
 
 struct Ship : public object
 {
-	std::vector<vec2f> pts{vec2f(0.03, 0), vec2f(-0.02, 0.02), vec2f(-0.02, -0.02)};
+
+	std::vector<vec2f> local{vec2f(0.03, 0), vec2f(-0.02, 0.02), vec2f(-0.02, -0.02)};
+	std::vector<vec2f> global{ vec2f(0.03, 0), vec2f(-0.02, 0.02), vec2f(-0.02, -0.02) };
+	std::vector<vec3i> faces{ vec3i(0, 1 , 2) };
+
 	float angle{PI / 2};
 	float speed_x{0};
 	float speed_y{0};
@@ -21,15 +25,36 @@ struct Ship : public object
 		pos.y += speed_y * elapsed;
 		rotate = Matrix22f(cosf(angle), -sinf(angle),
 						   sinf(angle), cosf(angle));
+
+		for (int i = 0; i < local.size(); i++)
+			global[i] = pos + (rotate * scale * local[i]);
 	}
 
 };
 
+
+
+
+std::vector<vec2f> asteroids_shape[] = {
+std::vector<vec2f> { vec2f(0.03, 0.04), vec2f(0, 0.02), vec2f(-0.01, 0.04), vec2f(-0.03, -0.01), vec2f(-0.005, -0.03), vec2f(0.04, -0.02), vec2f(0.05, 0) },
+std::vector<vec2f> { vec2f(0.02, 0.04), vec2f(0, 0.02), vec2f(-0.05, 0.04), vec2f(-0.03, -0.01), vec2f(-0.005, -0.01), vec2f(0.05, -0.02), vec2f(0.05, 0) },
+std::vector<vec2f> { vec2f(0.03, 0.04), vec2f(0, 0.05), vec2f(-0.01, 0.04), vec2f(-0.03, -0.01), vec2f(-0.005, -0.03), vec2f(0.04, -0.02), vec2f(0.05, 0) },
+std::vector<vec2f> { vec2f(0.03, 0.04), vec2f(0, 0.05), vec2f(-0.02, 0.05), vec2f(0, 0.01), vec2f(-0.03, -0.01), vec2f(-0.005, -0.03), vec2f(0.04, -0.02), vec2f(0.05, 0) },
+std::vector<vec2f> { vec2f(0.01, 0.04), vec2f(0, 0.02), vec2f(-0.01, 0.04),vec2f(-0.04, 0.05), vec2f(-0.03, -0.01), vec2f(-0.1, 0.02) , vec2f(-0.05, -0.02), vec2f(0.01, -0.07), vec2f(0.05, -0.02) , vec2f(0.1, 0), vec2f(0.02, 0.01) }
+};
+
 struct Asteroid : public object
 {
+	std::vector<vec2f> local;
+	std::vector<vec2f> global;
+	std::vector<vec3i> faces; // vec3i means 3 verts of triangle
+
 	int shape;
 	float speed_x{0};
 	float speed_y{0};
+
+	//Asteroid() = default;
+	Asteroid(std::vector<vec2f> pts): local(pts), global(pts) {}
 };
 
 struct Asteroid_buffer
@@ -38,7 +63,15 @@ struct Asteroid_buffer
 	size_t actives{0};
 	std::vector<Asteroid> buffer;
 
-	Asteroid_buffer(size_t size) : size(size), buffer(size) {}
+	Asteroid_buffer(size_t size) : size(size)
+	{
+		buffer.reserve(size);
+		for (int i = 0; i < size; i++)
+		{
+			buffer.push_back(Asteroid(asteroids_shape[rand() % 5]));
+			buffer.back().faces = triangulate(buffer.back().local);
+		}
+	}
 
 	void calculate()
 	{
@@ -46,6 +79,9 @@ struct Asteroid_buffer
 		{
 			astr.pos.x += astr.speed_x * elapsed;
 			astr.pos.y += astr.speed_y * elapsed;
+
+			for (int i = 0; i < astr.local.size(); i++)
+				astr.global[i] = astr.pos + (astr.rotate * astr.scale * astr.local[i]);
 		}
 	}
 
@@ -79,12 +115,3 @@ void add_asteroid(Asteroid_buffer& buffer, float scale, float diviation)
 	buffer.buffer[buffer.actives].speed_y = -sinf(angle + div(gen)) * speed(gen);
 	buffer.actives++;
 } 
-
-
-	std::vector<vec2f> asteroids_shape[] = {
-	std::vector<vec2f> { vec2f(0.03, 0.04), vec2f(0, 0.02), vec2f(-0.01, 0.04), vec2f(-0.03, -0.01), vec2f(-0.005, -0.03), vec2f(0.04, -0.02), vec2f(0.05, 0) },
-	std::vector<vec2f> { vec2f(0.02, 0.04), vec2f(0, 0.02), vec2f(-0.05, 0.04), vec2f(-0.03, -0.01), vec2f(-0.005, -0.01), vec2f(0.05, -0.02), vec2f(0.05, 0) },
-	std::vector<vec2f> { vec2f(0.03, 0.04), vec2f(0, 0.05), vec2f(-0.01, 0.04), vec2f(-0.03, -0.01), vec2f(-0.005, -0.03), vec2f(0.04, -0.02), vec2f(0.05, 0) },
-	std::vector<vec2f> { vec2f(0.03, 0.04), vec2f(0, 0.05), vec2f(-0.02, 0.05), vec2f(0, 0.01), vec2f(-0.03, -0.01), vec2f(-0.005, -0.03), vec2f(0.04, -0.02), vec2f(0.05, 0) },
-	std::vector<vec2f> { vec2f(0.01, 0.04), vec2f(0, 0.02), vec2f(-0.01, 0.04),vec2f(-0.04, 0.05), vec2f(-0.03, -0.01), vec2f(-0.1, 0.02) , vec2f(-0.05, -0.02), vec2f(0.01, -0.07), vec2f(0.05, -0.02) , vec2f(0.1, 0), vec2f(0.02, 0.01) }
-	};

@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <utility>
 #include <random>
+#include <map>
 
 #define MAX(a, b) (a > b? a: b)
 #define MIN(a, b) (a < b? a: b)
@@ -22,6 +23,8 @@ bool running = true;
 #include "input.cpp"
 #include "timer.cpp"
 
+#include "triangulation_stuff.cpp"
+#include "SAT.cpp"
 #include "game_stuff.cpp"
 
 
@@ -80,7 +83,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	Timer timer;
 
 	Ship ship;
-	Ship_shader ship_shader;
+	line_shader ship_shader;
 
 	// stars
 	Star_shader star_shader;
@@ -197,6 +200,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		flame.calculate();
 		asteroids.calculate();
 
+		for (int i = 0; i < asteroids.actives; i++)
+		{
+			float dist = (asteroids[i].pos - ship.pos).norm();
+
+			//if (dist < 0.2)
+				if (SAT_shape(ship.global, ship.faces, asteroids[i].global, asteroids[i].faces))
+				{
+					uni_shape_color = Color(255, 0, 0);
+					break;
+				}
+				else
+					uni_shape_color = Color(255, 255, 255);
+		}
+
 
 		add_asteroid(asteroids, 1, PI/3);
 
@@ -221,6 +238,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			draw_filled_shape(shapes[stars[i].shape], stars[i], &star_shader);
 		}
 
+		//draw flame
 		for (int i = 0; i < flame.actives; i++)
 		{
 			uni_life_time = flame[i].life_time > 1 ? 1 : flame[i].life_time;
@@ -228,11 +246,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 		// ship
-		draw_shape(ship.pts, ship, &ship_shader);
+		draw_shape(ship.local, ship, &ship_shader);
 
 		for (int i = 0; i < asteroids.actives; i++)
 		{
-			draw_shape(asteroids_shape[asteroids[i].shape], asteroids[i], &ship_shader);
+			draw_shape(asteroids[i].local, asteroids[i], &ship_shader);
 		}
 
 
