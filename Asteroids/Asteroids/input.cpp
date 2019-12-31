@@ -34,6 +34,7 @@ enum Keyboard_buttons
 	BUTTON_DOWN,
 	BUTTON_LEFT,
 	BUTTON_RIGHT,
+	BUTTON_SPACE,
 
 	BUTTONS_COUNT
 };

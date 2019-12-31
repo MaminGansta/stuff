@@ -114,4 +114,48 @@ void add_asteroid(Asteroid_buffer& buffer, float scale, float diviation)
 	buffer.buffer[buffer.actives].speed_x = -cosf(angle + div(gen)) * speed(gen);
 	buffer.buffer[buffer.actives].speed_y = -sinf(angle + div(gen)) * speed(gen);
 	buffer.actives++;
-} 
+}
+
+struct Bullet
+{
+	vec2f pos;
+	vec2f dir;
+	float speed = 1;
+};
+
+template <int size>
+struct bullet_buffer
+{
+	int max_size = size;
+	Bullet buffer[size];
+	int  actives = 0;
+	
+	bullet_buffer() = default;
+
+	void add_bullet(vec2f pos, float dir)
+	{
+		if (actives == max_size) return;
+		buffer[actives++] = Bullet{ pos, vec2f(cosf(dir), sinf(dir)) };
+	}
+
+	void calculate()
+	{
+		for (int i = 0; i < actives; i++)
+		{
+			buffer[i].pos += buffer[i].dir * buffer[i].speed * elapsed;
+
+			if (fabs(buffer[i].pos.x) > 0.7 || fabs(buffer[i].pos.y) > 0.7)
+				std::swap(buffer[i], buffer[--actives]);
+		}
+	}
+
+	void delete_bullet(int i)
+	{
+		std::swap(buffer[i], buffer[--actives]);
+	}
+
+	Bullet& operator [](int i)
+	{
+		return buffer[i];
+	}
+};

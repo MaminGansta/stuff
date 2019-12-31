@@ -98,6 +98,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// asteroids
 	Asteroid_buffer asteroids(10);
 
+	// bullets
+	bullet_buffer<10> bullets;
+	float shot_delay = 0;
 
 	while (running)
 	{
@@ -106,69 +109,70 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		{
 			switch (msg.message)
 			{
-				case WM_MOUSEMOVE:
+			case WM_MOUSEMOVE:
+			{
+				int x = LOWORD(msg.lParam);
+				int y = HIWORD(msg.lParam);
+				mouse.pos.x = float(x - surface.width / 2) / surface.height;
+				mouse.pos.y = float(surface.height - y - surface.height / 2) / surface.height;
+			}break;
+			case WM_LBUTTONDOWN:
+			{
+				mouse.buttons[LBUTTON].changed = !mouse.buttons[LBUTTON].is_down;
+				mouse.buttons[LBUTTON].is_down = true;
+			}break;
+			case WM_LBUTTONUP:
+			{
+				mouse.buttons[LBUTTON].changed = mouse.buttons[LBUTTON].is_down;
+				mouse.buttons[LBUTTON].is_down = false;
+			}break;
+			case WM_KEYUP:
+			case WM_KEYDOWN:
+			{
+				uint32_t vk_code = (uint32_t)msg.wParam;
+				bool is_down = ((msg.lParam & (1 << 31)) == 0);
+
+				switch (vk_code)
 				{
-					int x = LOWORD(msg.lParam);
-					int y = HIWORD(msg.lParam);
-					mouse.pos.x = float(x - surface.width / 2) / surface.height;
-					mouse.pos.y = float(surface.height - y - surface.height / 2) / surface.height;
+				case VK_LEFT:
+				{
+					input.buttons[BUTTON_LEFT].changed = input.buttons[BUTTON_LEFT].is_down != is_down;
+					input.buttons[BUTTON_LEFT].is_down = is_down;
 				}break;
-				case WM_LBUTTONDOWN:
+				case VK_RIGHT:
 				{
-					mouse.buttons[LBUTTON].changed = !mouse.buttons[LBUTTON].is_down;
-					mouse.buttons[LBUTTON].is_down = true;
+					input.buttons[BUTTON_RIGHT].changed = input.buttons[BUTTON_RIGHT].is_down != is_down;
+					input.buttons[BUTTON_RIGHT].is_down = is_down;
 				}break;
-				case WM_LBUTTONUP:
+				case VK_UP:
 				{
-					mouse.buttons[LBUTTON].changed = mouse.buttons[LBUTTON].is_down;
-					mouse.buttons[LBUTTON].is_down = false;
+					input.buttons[BUTTON_UP].changed = input.buttons[BUTTON_UP].is_down != is_down;
+					input.buttons[BUTTON_UP].is_down = is_down;
 				}break;
-				case WM_KEYUP:
-				case WM_KEYDOWN:
+				case VK_DOWN:
 				{
-					uint32_t vk_code = (uint32_t)msg.wParam;
-					bool is_down = ((msg.lParam & (1 << 31)) == 0);
-
-					switch (vk_code)
-					{
-						case VK_LEFT:
-						{
-							input.buttons[BUTTON_LEFT].changed = input.buttons[BUTTON_LEFT].is_down != is_down;
-							input.buttons[BUTTON_LEFT].is_down = is_down;
-
-						}break;
-						case VK_RIGHT:
-						{
-							input.buttons[BUTTON_RIGHT].changed = input.buttons[BUTTON_RIGHT].is_down != is_down;
-							input.buttons[BUTTON_RIGHT].is_down = is_down;
-
-						}break;
-						case VK_UP:
-						{
-							input.buttons[BUTTON_UP].changed = input.buttons[BUTTON_UP].is_down != is_down;
-							input.buttons[BUTTON_UP].is_down = is_down;
-
-						}break;
-						case VK_DOWN:
-						{
-							input.buttons[BUTTON_DOWN].changed = input.buttons[BUTTON_DOWN].is_down != is_down;
-							input.buttons[BUTTON_DOWN].is_down = is_down;
-
-						}break;
-						case VK_ESCAPE:
-						{
-							running = false;
-						}break;
-					}
-				}
-				default:
+					input.buttons[BUTTON_DOWN].changed = input.buttons[BUTTON_DOWN].is_down != is_down;
+					input.buttons[BUTTON_DOWN].is_down = is_down;
+				}break;
+				case VK_SPACE:
 				{
-					TranslateMessage(&msg);
-					DispatchMessage(&msg);
+					input.buttons[BUTTON_SPACE].changed = input.buttons[BUTTON_DOWN].is_down != is_down;
+					input.buttons[BUTTON_SPACE].is_down = is_down;
+				}break;
+				case VK_ESCAPE:
+				{
+					running = false;
+				}break;
 				}
 			}
+			default:
+			{
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+			}
 		}
-		
+
 		//  Simulate
 #define MAX_SPEED 1
 		// input handler
@@ -193,18 +197,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			ship.angle += PI * elapsed;
 
 		if (input.buttons[BUTTON_RIGHT].is_down)
-			ship.angle -= PI* elapsed;
+			ship.angle -= PI * elapsed;
 
 		ship.calculate();
 		stars.calculate();
 		flame.calculate();
 		asteroids.calculate();
+		bullets.calculate();
 
 		for (int i = 0; i < asteroids.actives; i++)
 		{
 			float dist = (asteroids[i].pos - ship.pos).norm();
 
-			//if (dist < 0.2)
+			if (dist < 0.2)
 				if (SAT_shape(ship.global, ship.faces, asteroids[i].global, asteroids[i].faces))
 				{
 					uni_shape_color = Color(255, 0, 0);
@@ -214,8 +219,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					uni_shape_color = Color(255, 255, 255);
 		}
 
+		// add asteroid if nessecery
+		add_asteroid(asteroids, 1, PI / 3);
 
-		add_asteroid(asteroids, 1, PI/3);
+		// bullet handler
+		shot_delay -= elapsed;
+		if (input.buttons[BUTTON_SPACE].is_down && input.buttons[BUTTON_SPACE].changed && shot_delay < 0)
+		{
+			bullets.add_bullet(ship.global[0], ship.angle);
+			shot_delay = 0.3;
+		}
+
 
 		// ateroids handler
 		for (int i = 0; i < asteroids.actives; i++)
@@ -245,13 +259,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			draw_filled_shape(shapes[flame[i].shape], flame[i], &flame_shader);
 		}
 
-		// ship
+		// draw ship
 		draw_shape(ship.local, ship, &ship_shader);
 
+		// draw asteroids
 		for (int i = 0; i < asteroids.actives; i++)
-		{
 			draw_shape(asteroids[i].local, asteroids[i], &ship_shader);
-		}
+
+		// draw bullets
+		for (int i = 0; i < bullets.actives; i++)
+			draw_filled_circle(bullets[i].pos, 0.005, Color(255, 255, 255));
 
 
 		// Render
