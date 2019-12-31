@@ -167,3 +167,98 @@ struct bullet_buffer
 		return buffer[i];
 	}
 };
+
+
+
+void draw_digit(int digit, vec2f pos)
+{
+	pos.x = pos.x * surface.height + surface.width / 2;
+	pos.y = pos.y * surface.height + surface.height / 2;
+
+	switch (digit)
+	{
+		case 0:
+		{
+			draw_filled_rect(pos.x, pos.y, pos.x + 20, pos.y+3, Color(255, 255, 255));
+			draw_filled_rect(pos.x, pos.y+20, pos.x + 20, pos.y + 23, Color(255, 255, 255));
+			draw_filled_rect(pos.x, pos.y, pos.x + 3, pos.y + 20, Color(255, 255, 255));
+			draw_filled_rect(pos.x + 17, pos.y, pos.x + 20, pos.y + 20, Color(255, 255, 255));
+		}break;
+		case 1:
+		{
+			draw_filled_rect(pos.x, pos.y, pos.x + 3, pos.y + 23, Color(255, 255, 255));
+		}break;
+		case 2:
+		{
+			draw_filled_rect(pos.x, pos.y, pos.x + 20, pos.y + 3, Color(255, 255, 255));
+			draw_filled_rect(pos.x, pos.y + 20, pos.x + 20, pos.y + 23, Color(255, 255, 255));
+			draw_filled_rect(pos.x, pos.y, pos.x + 3, pos.y + 10, Color(255, 255, 255));
+			draw_filled_rect(pos.x + 17, pos.y + 10, pos.x + 20, pos.y + 20, Color(255, 255, 255));
+			draw_filled_rect(pos.x, pos.y+10, pos.x + 20, pos.y + 12, Color(255, 255, 255));
+		}break;
+		case 3:
+		{
+			draw_filled_rect(pos.x, pos.y, pos.x + 20, pos.y + 3, Color(255, 255, 255));
+			draw_filled_rect(pos.x, pos.y + 20, pos.x + 20, pos.y + 23, Color(255, 255, 255));
+			draw_filled_rect(pos.x + 17, pos.y, pos.x + 20, pos.y + 20, Color(255, 255, 255));
+			draw_filled_rect(pos.x, pos.y + 10, pos.x + 20, pos.y + 12, Color(255, 255, 255));
+
+		}break;
+		case 4:
+		{
+			draw_filled_rect(pos.x + 17, pos.y, pos.x + 20, pos.y + 20, Color(255, 255, 255));
+			draw_filled_rect(pos.x, pos.y + 8, pos.x + 3, pos.y + 20, Color(255, 255, 255));
+			draw_filled_rect(pos.x, pos.y + 6, pos.x + 20, pos.y + 9, Color(255, 255, 255));
+		}break;
+		case 5:
+		{
+			draw_filled_rect(pos.x, pos.y, pos.x + 20, pos.y + 3, Color(255, 255, 255));
+			draw_filled_rect(pos.x, pos.y + 20, pos.x + 20, pos.y + 23, Color(255, 255, 255));
+			draw_filled_rect(pos.x, pos.y + 10, pos.x + 3, pos.y + 20, Color(255, 255, 255));
+			draw_filled_rect(pos.x + 17, pos.y, pos.x + 20, pos.y + 10, Color(255, 255, 255));
+			draw_filled_rect(pos.x, pos.y + 10, pos.x + 20, pos.y + 12, Color(255, 255, 255));
+		}break;
+		case 6:
+		{
+			draw_filled_rect(pos.x, pos.y, pos.x + 20, pos.y + 3, Color(255, 255, 255));
+			draw_filled_rect(pos.x, pos.y + 20, pos.x + 20, pos.y + 23, Color(255, 255, 255));
+			draw_filled_rect(pos.x, pos.y, pos.x + 3, pos.y + 20, Color(255, 255, 255));
+			draw_filled_rect(pos.x + 17, pos.y, pos.x + 20, pos.y + 10, Color(255, 255, 255));
+			draw_filled_rect(pos.x, pos.y + 10, pos.x + 20, pos.y + 12, Color(255, 255, 255));
+
+		}break;
+		case 7:
+		{
+			draw_filled_rect(pos.x, pos.y + 20, pos.x + 20, pos.y + 23, Color(255, 255, 255));
+			draw_filled_rect(pos.x + 17, pos.y, pos.x + 20, pos.y + 20, Color(255, 255, 255));
+		}break;
+		case 8:
+		{
+			draw_filled_rect(pos.x, pos.y, pos.x + 20, pos.y + 3, Color(255, 255, 255));
+			draw_filled_rect(pos.x, pos.y + 20, pos.x + 20, pos.y + 23, Color(255, 255, 255));
+			draw_filled_rect(pos.x, pos.y, pos.x + 3, pos.y + 20, Color(255, 255, 255));
+			draw_filled_rect(pos.x + 17, pos.y, pos.x + 20, pos.y + 20, Color(255, 255, 255));
+			draw_filled_rect(pos.x, pos.y + 10, pos.x + 20, pos.y + 12, Color(255, 255, 255));
+		}break;
+		case 9:
+		{
+			draw_filled_rect(pos.x, pos.y, pos.x + 20, pos.y + 3, Color(255, 255, 255));
+			draw_filled_rect(pos.x, pos.y + 20, pos.x + 20, pos.y + 23, Color(255, 255, 255));
+			draw_filled_rect(pos.x, pos.y + 10, pos.x + 3, pos.y + 20, Color(255, 255, 255));
+			draw_filled_rect(pos.x + 17, pos.y, pos.x + 20, pos.y + 20, Color(255, 255, 255));
+			draw_filled_rect(pos.x, pos.y + 10, pos.x + 20, pos.y + 12, Color(255, 255, 255));
+		}break;
+	}
+}
+
+void draw_score(int score, vec2f pos)
+{
+	float shift = -0.05;
+	do 
+	{
+		int rem = score % 10;
+		score /= 10;
+		draw_digit(rem, pos);
+		pos.x += shift;
+	} while (score > 0);
+}
