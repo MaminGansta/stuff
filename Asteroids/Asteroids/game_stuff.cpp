@@ -96,7 +96,7 @@ struct Asteroid_buffer
 	}
 };
 
-void add_asteroid(Asteroid_buffer& buffer, float scale, float diviation)
+void add_asteroid(Asteroid_buffer& buffer, float scale, float diviation, vec2f pos = vec2f())
 {
 	// pos on the circle
 	// diviation of the center
@@ -106,12 +106,15 @@ void add_asteroid(Asteroid_buffer& buffer, float scale, float diviation)
 
 	std::uniform_int_distribution<> r_shape(0, 4);
 	buffer.buffer[buffer.actives].shape = r_shape(gen);
-	buffer.buffer[buffer.actives].scale = scale;
+	buffer.buffer[buffer.actives].scale = Matrix22f(scale, 0, 0 , scale);
 	std::uniform_real_distribution<> r(0, 2*PI);
 	float angle = r(gen);
 	float x = cosf(angle) * 0.8;
 	float y = sinf(angle) * 0.8;
-	buffer.buffer[buffer.actives].pos = vec2f(x, y);
+	if (pos.x == 0 && pos.y == 0)
+		buffer.buffer[buffer.actives].pos = vec2f(x, y);
+	else
+		buffer.buffer[buffer.actives].pos = pos;
 
 	std::uniform_real_distribution<> div(0, diviation);
 	std::uniform_real_distribution<> speed(0.1, 0.3);

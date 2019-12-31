@@ -94,9 +94,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// rocket flame
 	flame_shader flame_shader;
 	particles_buffer flame(1000);
+	particles_buffer asteroids_blow(200);
 
 	// asteroids
-	Asteroid_buffer asteroids(10);
+	Asteroid_buffer asteroids(30);
+	float asteroid_add_deley = 0;
 
 	// bullets
 	bullet_buffer<10> bullets;
@@ -220,7 +222,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 		// add asteroid if nessecery
-		add_asteroid(asteroids, 1, PI / 3);
+		if (asteroid_add_deley < 0)
+		{
+			add_asteroid(asteroids, 1, PI / 3);
+			asteroid_add_deley = 0.4;
+		}
+		asteroid_add_deley -= elapsed;
 
 		// add bullet
 		shot_delay -= elapsed;
@@ -245,8 +252,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 						vec3f out;
 						if (fbarycentric(vec3f(asteroids[i].global[face.x]), vec3f(asteroids[i].global[face.y]), vec3f(asteroids[i].global[face.z]), vec3f(bullets[j].pos), &out))
 						{
+							// add small asteroids
+							if (asteroids[i].scale[0][0] != 0.5)
+								for  (int v = 0; v < 2; v++)
+									add_asteroid(asteroids, 0.5, 2 * PI, asteroids[i].pos);
+
+							for (int h = 0; h < 30; h++)
+								add_particles(asteroids_blow, rand() % 3, asteroids[i].pos, 0.02, vec2f(0,1), 2*PI, float(rand() % 40 + 30) / 100, float(rand() % 130) / 100);
+
 							asteroids.delete_asteroid(i--);
 							bullets.delete_bullet(j--);
+							
+
 							break;
 						}
 					}
@@ -264,6 +281,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 		}
 
+		// asteroids blow up particles calculation
+		asteroids_blow.calculate();
+		
 		// Draw
 		// clear screen
 		draw_filled_rect(0, 0, surface.width, surface.height, Color(0, 0, 0));
@@ -276,6 +296,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 		//draw flame
+		uni_particles_color = Color(255, 60, 0);
 		for (int i = 0; i < flame.actives; i++)
 		{
 			uni_life_time = flame[i].life_time > 1 ? 1 : flame[i].life_time;
@@ -292,6 +313,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// draw bullets
 		for (int i = 0; i < bullets.actives; i++)
 			draw_filled_circle(bullets[i].pos, 0.005, Color(255, 255, 255));
+
+		// draw asteroid blow up
+		uni_particles_color = Color(255, 255, 255);
+		for (int i = 0; i < asteroids_blow.actives; i++)
+		{
+			uni_life_time = asteroids_blow[i].life_time > 1 ? 1 : asteroids_blow[i].life_time;
+			draw_filled_shape(shapes[asteroids_blow[i].shape], asteroids_blow[i], &flame_shader);
+		}
+
 
 
 		// Render

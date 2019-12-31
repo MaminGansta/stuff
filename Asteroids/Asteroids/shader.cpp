@@ -9,6 +9,7 @@ struct IShader
 
 // globals (uniform)
 // life time of current partical
+Color uni_particles_color = Color(255, 255, 255);
 float uni_life_time = 1;
 
 // particles shader
@@ -26,7 +27,7 @@ struct flame_shader : public IShader
 
 	Color fragment() override
 	{
-		return Color(255, 60, 0) * uni_life_time;
+		return uni_particles_color * uni_life_time;
 	}
 };
 
