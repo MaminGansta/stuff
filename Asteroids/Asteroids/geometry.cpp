@@ -193,7 +193,7 @@ inline bool fbarycentric(vec3f A, vec3f B, vec3f C, vec3f P, vec3f* out)
 		out->y = u.y / u.z;
 		out->z = u.x / u.z;
 		if ((out->x > 0 && out->y > 0 && out->z >= 0) &&
-		    (fabs(out->x + out->y + out->z) < 0.001))
+		    (out->x + out->y + out->z < 1))
 			return true;
 	}
 	return false;

@@ -85,6 +85,11 @@ struct Asteroid_buffer
 		}
 	}
 
+	void delete_asteroid(int i)
+	{
+		std::swap(buffer[i], buffer[--actives]);
+	}
+
 	Asteroid& operator [] (int i)
 	{
 		return buffer[i];

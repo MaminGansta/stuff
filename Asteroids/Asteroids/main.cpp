@@ -222,7 +222,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// add asteroid if nessecery
 		add_asteroid(asteroids, 1, PI / 3);
 
-		// bullet handler
+		// add bullet
 		shot_delay -= elapsed;
 		if (input.buttons[BUTTON_SPACE].is_down && input.buttons[BUTTON_SPACE].changed && shot_delay < 0)
 		{
@@ -230,6 +230,29 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			shot_delay = 0.3;
 		}
 
+		// bullet handle
+		for (int j = 0; j < bullets.actives; j++)
+		{
+			for (int i = 0; i < asteroids.actives; i++)
+			{
+				float dist = (bullets[j].pos - asteroids[i].pos).norm();
+
+				if (dist < 0.2)
+				{
+					for (int a = 0; a < asteroids[i].faces.size(); a++)
+					{
+						vec3i face = asteroids[i].faces[a];
+						vec3f out;
+						if (fbarycentric(vec3f(asteroids[i].global[face.x]), vec3f(asteroids[i].global[face.y]), vec3f(asteroids[i].global[face.z]), vec3f(bullets[j].pos), &out))
+						{
+							asteroids.delete_asteroid(i--);
+							bullets.delete_bullet(j--);
+							break;
+						}
+					}
+				}
+			}
+		}
 
 		// ateroids handler
 		for (int i = 0; i < asteroids.actives; i++)
