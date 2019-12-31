@@ -256,7 +256,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 			// add bullet
 			shot_delay -= elapsed;
-			if (input.buttons[BUTTON_SPACE].is_down && input.buttons[BUTTON_SPACE].changed && shot_delay < 0)
+			if (alive && input.buttons[BUTTON_SPACE].is_down && input.buttons[BUTTON_SPACE].changed && shot_delay < 0)
 			{
 				bullets.add_bullet(ship.global[0], ship.angle);
 				shot_delay = 0.3;
