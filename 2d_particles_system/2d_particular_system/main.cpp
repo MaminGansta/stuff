@@ -10,7 +10,7 @@
 #undef min
 #undef max
 
-#define mod 0 // 0 1 2 : flame , black hole, gravity
+#define mod 2 // 0 1 2 : flame , black hole, gravity
 
 #define MAX(a, b) (a > b? a: b)
 #define MIN(a, b) (a < b? a: b)

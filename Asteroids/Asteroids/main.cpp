@@ -74,7 +74,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	RegisterClass(&window_class);
 
-	HWND window = CreateWindow(window_class.lpszClassName, "Asteroids  (ENTER for restart)", WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 800, 600, 0, 0, hInstance, 0);
+	HWND window = CreateWindow(window_class.lpszClassName, "Asteroids  (ENTER for restart)", WS_MINIMIZEBOX | WS_SYSMENU | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 800, 600, 0, 0, hInstance, 0);
 	HDC hdc = GetDC(window);
 
 	while (running)
