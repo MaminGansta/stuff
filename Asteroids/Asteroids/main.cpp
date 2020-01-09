@@ -100,7 +100,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// rocket flame
 		flame_shader flame_shader;
 		particles_buffer flame(1500);
-		particles_buffer asteroids_blow(200);
+		particles_buffer asteroids_blow(400);
 
 		// asteroids
 		Asteroid_buffer asteroids(30);
@@ -267,9 +267,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{
 				for (int i = 0; i < asteroids.actives; i++)
 				{
-					float dist = (bullets[j].pos - asteroids[i].pos).norm();
-
-					if (dist < 0.2)
+					//float dist = (bullets[j].pos - asteroids[i].pos).norm();
+					
+					//if (dist < 0.5)
 					{
 						for (int a = 0; a < asteroids[i].faces.size(); a++)
 						{
@@ -286,8 +286,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 								}
 								score += 50;
 
-								for (int h = 0; h < 30; h++)
-									add_particles(asteroids_blow, rand() % 3, asteroids[i].pos, 0.02, vec2f(0, 1), 2 * PI, float(rand() % 40 + 30) / 100, float(rand() % 130) / 100);
+								for (int h = 0; h < 50; h++)
+									add_particles(asteroids_blow, rand() % 3, asteroids[i].pos, 0.02, vec2f(0, 1), 2 * PI, float(rand() % 50 + 20) / 100, float(rand() % 130) / 100);
 
 								asteroids.delete_asteroid(i--);
 								bullets.delete_bullet(j--);
