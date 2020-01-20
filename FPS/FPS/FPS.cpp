@@ -32,6 +32,21 @@ int main(void)
 	SetConsoleActiveScreenBuffer(hConsole);
 	DWORD dwBytesWritten = 0;
 
+	// set font size
+	CONSOLE_FONT_INFOEX cfi;
+	cfi.cbSize = sizeof(cfi);
+	cfi.nFont = 0;
+	cfi.dwFontSize.X = 0;
+	cfi.dwFontSize.Y = 16;
+	cfi.FontFamily = FF_DONTCARE;
+	cfi.FontWeight = FW_NORMAL;
+	std::wcscpy(cfi.FaceName, L"Consolas"); // Choose your font
+	SetCurrentConsoleFontEx(hConsole, false, &cfi);
+
+	// set window size
+	SMALL_RECT windowSize = { 0, 0, nScreenHeight, nScreenWidth };
+	SetConsoleWindowInfo(hConsole, TRUE, &windowSize);
+
 
 	std::string map;
 	map += "XXXXXXXXXXXXXXXX";
