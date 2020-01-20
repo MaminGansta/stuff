@@ -182,7 +182,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 #if mod == 0
 		// Simulate
-		add_particles(particles, rand() % 5, mouse.pos, 0.1, vec2f(0, 1), PI / 2.5, float(rand() % 40 + 30) / 100, float(rand() % 100) / 100);
+		add_particles(particles, rand() % 5, mouse.pos, 0.1, vec2f(0, 1), 2*PI, float(rand() % 40) / 100, float(rand() % 100) / 100);
 		particles.calculate();
 		// Draw
 		// draw particles
